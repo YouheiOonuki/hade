@@ -1,0 +1,175 @@
+/* ===========================
+   ド派手版 — 見た目（yorozu-plans ROADMAP 7.39.1 K170、企画書 86）
+   色はトークン（--bg / --card / --text / --muted / --accent / --border）だけを使う。演出の場面だけは派手な色を直接持つ（※演出です）。
+   点滅は 1 秒に 3 回まで（hade-flash は 400ms。engine.js の FLASH_MIN_MS 340 より遅く）。「視差効果を減らす」なら動きを止める
+   =========================== */
+/* yorozu-common:begin v1 — サイト共通の部品とトークン。正本は youheioonuki.github.io の tools/common/yorozu-common.css。
+   この begin〜end の間は手で直さない（tools/sync-common.mjs で全ツールに配る。ツール固有の上書きは end の後に書く）。
+   出どころ（2026-10-03 確認。yorozu-plans 企画書 59）:
+   - デジタル庁デザインシステム https://design.digital.go.jp/dads/ のコンテンツを加工して作成
+     （フォーカスの輪・リンクの下線・字の大きさの下限・行間・入力欄のエラー表示）。
+     トークンの値は @digital-go-jp/design-tokens 2.0.1（MIT, (c) 2023 デジタル庁）から
+   - GOV.UK Frontend 6.5.1（MIT, (c) Crown copyright）の考え方: visually-hidden、エラーの文の前に読み上げ用の語
+   - 色は和紙風のまま（値は 2026-09-23 からの共通の値）。Web フォントは読まない（ROADMAP 3.3・D2） */
+:root {
+  color-scheme: light dark;
+  --bg: #f0ebe0;
+  --bg-2: #e6dfd0;
+  --card: #faf6ee;
+  --text: #3a3025;
+  --muted: #6e604f;          /* 本文の補足。--bg の上で 5.1:1 */
+  --accent: #8b4513;
+  --accent-soft: #f3e6d8;
+  --border: #cfc0a0;         /* 飾りの線（区切り）だけ。操作できる物の枠には --input-border */
+  --input-border: #857561;   /* 入力欄の枠。WCAG 1.4.11 の 3:1（--bg で 3.7:1）。DADS の入力欄は gray-600 の 1px */
+  --shadow: rgba(58, 48, 37, 0.12);
+  --error: #ce0000;          /* DADS red-900（semantic error-2） */
+  --ok: #197a4b;             /* DADS green-800（semantic success-2） */
+  --focus: #ffd43d;          /* DADS yellow-300 */
+  --focus-ring: #000;        /* DADS: 黒 4px の輪＋黄 2px */
+  --font-ui: "Noto Sans JP", "Noto Sans CJK JP", "Hiragino Sans", "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
+  /* 字の大きさ（DADS: 本文と操作は 16px 以上、補足は 14px まで、14px 未満は使わない） */
+  --fs-s: 0.875rem;
+  --fs-m: 1rem;
+  --fs-l: 1.25rem;           /* 見出し（隣の段との比 1.25 以上: impeccable typeset） */
+  --fs-xl: 1.625rem;         /* ページの題 */
+  --lh-body: 1.7;            /* DADS の本文の行間 170% */
+  --lh-tight: 1.4;           /* 見出し */
+  /* 余白（4px を基準。DADS の spacing） */
+  --sp-1: 0.25rem;
+  --sp-2: 0.5rem;
+  --sp-3: 0.75rem;
+  --sp-4: 1rem;
+  --sp-6: 1.5rem;
+  --sp-8: 2rem;
+  --radius: 8px;
+  --tap: 44px;               /* 押せる物の高さの下限（DADS・SCREEN 5 章） */
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #1c1814;
+    --bg-2: #25201a;
+    --card: #2b251e;
+    --text: #ece4d6;
+    --muted: #b9ab96;
+    --accent: #e0a066;
+    --accent-soft: #3a2e22;
+    --border: #4a3f33;
+    --input-border: #8c7d68;
+    --shadow: rgba(0, 0, 0, 0.4);
+    --error: #ff8a7a;
+    --ok: #6fcf97;
+    --focus-ring: #ffd43d;   /* 暗い地では黄の輪＋黒の縁 */
+    --focus: #000;
+  }
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+[hidden] { display: none !important; }
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+body { font-family: var(--font-ui); background: var(--bg); color: var(--text); line-height: var(--lh-body); }
+/* リンクは色と下線の両方（DADS リンクテキスト）。ホバーで下線を太く */
+a { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset: 3px; }
+@media (hover: hover) { a:hover { text-decoration-thickness: 3px; } }
+/* フォーカスの輪（DADS）。:where で詳しさを 0 にして、ツールの規則で上書きできるようにする */
+:where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
+  outline: 4px solid var(--focus-ring); outline-offset: 2px; box-shadow: 0 0 0 2px var(--focus);
+}
+:where(input, select, textarea, button) { font: inherit; color: inherit; }
+/* 入力欄の例（placeholder）も 4.5:1。ブラウザ既定の灰色は和紙の地で 4.3:1 */
+:where(input, textarea)::placeholder { color: var(--muted); opacity: 1; }
+/* 入力欄の字は 16px 以上（iPhone で拡大されない・DADS） */
+:where(input:not([type="checkbox"]):not([type="radio"]):not([type="range"]), select, textarea) { font-size: max(1rem, 16px); }
+/* エラー（DADS: 枠を赤に、文の頭に「＊」。GOV.UK: 読み上げには「エラー:」を先に）。
+   使い方: <p class="field-error" id="x-err"><span class="visually-hidden">エラー:</span>＊ 0 以上の数を入れてください</p> と aria-describedby */
+[aria-invalid="true"] { border-color: var(--error) !important; }
+.field-error { color: var(--error); font-weight: 700; margin-top: var(--sp-1); }
+/* 画面には出さず、読み上げだけ（GOV.UK govuk-visually-hidden） */
+.visually-hidden {
+  position: absolute !important; width: 1px !important; height: 1px !important; margin: 0 !important; padding: 0 !important;
+  overflow: hidden !important; clip-path: inset(50%) !important; white-space: nowrap !important; border: 0 !important;
+}
+@media (forced-colors: active) { :where(a, button, input, select, textarea, summary):focus-visible { outline-color: Highlight; } }
+/* 読む行の長さ: 1 行 40 字前後まで（REVIEW C9 line-length）。画面の幅いっぱいに伸びる見出し帯の説明文に */
+.app-header > p { max-width: 40em; margin-left: auto; margin-right: auto; }
+/* 印刷では広告を出さない（SCREEN 4 章。全ツール共通） */
+@media print { ins.adsbygoogle, .google-auto-placed, iframe[id^="aswift"], iframe[id^="google_ads"] { display: none !important; } }
+/* yorozu-common:end */
+
+
+/* --- 土台（ほかのツールと同じ形） --- */
+body { margin: 0; background: var(--bg); color: var(--text); font-family: var(--font-ui); line-height: 1.7; }
+.app-header { text-align: center; padding: 1.4rem 1rem 0.4rem; }
+.app-header h1 { color: var(--accent); margin: 0 0 0.3rem; font-size: 1.6rem; }
+.subtitle { color: var(--muted); margin: 0; }
+.app-main { margin: 0 auto; padding: 0 16px 2rem; }
+.card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 1rem 1.1rem; margin: 0 0 1rem; }
+.field { margin: 0 0 0.9rem; }
+.field label { display: block; font-weight: 600; margin-bottom: 0.25rem; }
+.money { display: flex; align-items: center; gap: 0.4rem; }
+.money input, .field select { font: inherit; font-size: 1.1rem; padding: 0.45rem 0.6rem; border: 1px solid var(--input-border); border-radius: 6px; background: var(--card); color: var(--text); min-height: 44px; width: 100%; max-width: 16rem; box-sizing: border-box; }
+.unit { color: var(--muted); }
+.hint, .small { font-size: 0.88rem; color: var(--muted); }
+label.inline { display: block; margin: 0.4rem 0; }
+details.opt > summary { cursor: pointer; color: var(--accent); font-weight: 600; margin: 0.4rem 0 0.8rem; }
+.app-footer { text-align: center; color: var(--muted); font-size: 0.85rem; padding: 1.5rem 16px; border-top: 1px solid var(--border); }
+.footer-nav ul { list-style: none; padding: 0; margin: 0 0 0.6rem; display: flex; flex-wrap: wrap; justify-content: center; gap: 0.4rem 1rem; }
+
+/* --- ド派手版の固有 --- */
+.app-main { max-width: 760px; }
+.hade-notice-top { font-size: 0.9rem; color: var(--muted); margin: 0.6rem 0 1rem; }
+.hade-list { list-style: none; padding: 0; }
+.hade-btn { display: inline-block; font: inherit; font-size: 1.05rem; font-weight: 700; padding: 0.7rem 1.4rem; margin: 0.3rem 0.4rem 0.3rem 0; border-radius: 999px; border: 2px solid var(--accent); background: var(--accent); color: #fff; cursor: pointer; text-decoration: none; min-height: 44px; }
+.hade-btn-sub { background: transparent; color: var(--accent); }
+.hade-go { margin-top: 0.8rem; font-size: 1.2rem; }
+.hade-go:disabled { opacity: 0.5; }
+
+/* 舞台: 画面いっぱい（ページの中の要素。本物の窓は開かない） */
+.hade-stage { position: fixed; inset: 0; z-index: 100; background: #111; color: #fff; display: flex; flex-direction: column; overflow: auto; }
+.hade-notice { margin: 0; padding: 0.35rem 0.8rem; background: #000; color: #ffd43d; font-size: 0.85rem; text-align: center; flex: none; }
+.hade-layer { flex: 1; display: flex; align-items: center; justify-content: center; padding: 1rem; text-align: center; }
+.hade-bar { flex: none; display: flex; justify-content: space-between; gap: 0.6rem; padding: 0.6rem 0.8rem; background: rgba(0, 0, 0, 0.6); }
+.hade-skip, .hade-sound { font: inherit; font-size: 1rem; min-height: 44px; padding: 0.4rem 1rem; border-radius: 999px; border: 2px solid #fff; background: transparent; color: #fff; cursor: pointer; }
+.hade-stage.is-shake .hade-layer { animation: hade-shake 0.5s linear infinite; }
+@keyframes hade-shake { 0%, 100% { transform: translate(0, 0); } 25% { transform: translate(-4px, 2px); } 50% { transform: translate(3px, -3px); } 75% { transform: translate(-2px, -2px); } }
+
+.hade-confirm-q { font-size: clamp(1.4rem, 5vw, 2.2rem); font-weight: 800; margin-bottom: 1rem; }
+/* 偽エラー: OS の画面とは見分けがつく形（顔文字・「※演出です」・停止コードはふざけた名前） */
+.hade-err { background: #1f4fbf; padding: 2rem 1.4rem; border-radius: 12px; max-width: 34rem; text-align: left; }
+.hade-err-face { font-size: 3rem; margin: 0 0 0.6rem; }
+.hade-err-title { font-size: 1.5rem; font-weight: 800; margin: 0 0 0.4rem; }
+.hade-err-body { font-size: 1.15rem; margin: 0 0 1rem; }
+.hade-err-code, .hade-err-pct { font-family: ui-monospace, monospace; opacity: 0.9; margin: 0.2rem 0; }
+.hade-reboot { font-family: ui-monospace, monospace; text-align: left; max-width: 34rem; }
+.hade-reboot-title { font-size: 1.3rem; font-weight: 700; }
+.hade-reboot-dots { font-size: 1.6rem; letter-spacing: 0.3em; }
+.hade-drum-title, .hade-slot-title { font-size: clamp(1.5rem, 6vw, 2.6rem); font-weight: 800; }
+.hade-spot { width: 9rem; height: 9rem; margin: 1rem auto; border-radius: 50%; background: radial-gradient(circle, #ffd43d, #e0a066 60%, transparent 70%); animation: hade-flash 400ms steps(2) infinite; }
+@keyframes hade-flash { 0% { opacity: 1; } 50% { opacity: 0.35; } }
+.hade-slot-row { font-family: ui-monospace, monospace; font-size: clamp(2.6rem, 13vw, 5.5rem); font-weight: 800; margin: 0.6rem 0; }
+.hade-digit { display: inline-block; min-width: 0.65em; color: #ffd43d; }
+.hade-digit.is-stop { color: #fff; }
+.hade-unit { font-size: 0.45em; margin-left: 0.2em; }
+.hade-gougai { background: #f4ecd8; color: #1c1814; padding: 1.4rem; max-width: 30rem; border: 6px double #1c1814; animation: hade-spin 0.9s ease-out 1; }
+@keyframes hade-spin { from { transform: rotate(-540deg) scale(0.1); } to { transform: rotate(0) scale(1); } }
+.hade-gougai-name { font-weight: 800; color: #c00; margin: 0; }
+.hade-gougai-head { font-size: clamp(1.8rem, 7vw, 3rem); font-weight: 900; margin: 0.4rem 0; }
+.hade-cm { border: 3px solid #ffd43d; padding: 1.2rem; max-width: 30rem; }
+.hade-cm-label { display: inline-block; background: #ffd43d; color: #000; font-weight: 800; padding: 0 0.5rem; margin: 0 0 0.6rem; }
+.hade-cm-copy { font-size: 1.3rem; font-weight: 700; }
+.hade-cm-link { color: #ffd43d; }
+.hade-cm-after { opacity: 0.8; margin-top: 1rem; }
+
+/* 決めの画面（画面写しで X に貼る 1 枚。見出し・数字・ツッコミ・サイト名） */
+.hade-finale { max-width: 32rem; }
+.hade-finale-head { font-size: clamp(2rem, 9vw, 3.4rem); font-weight: 900; color: #ffd43d; margin: 0; }
+.hade-finale-num { font-size: clamp(2.6rem, 13vw, 5rem); font-weight: 900; margin: 0.2rem 0; font-variant-numeric: tabular-nums; }
+.hade-finale-tsukkomi { font-size: 1.2rem; margin: 0 0 0.8rem; }
+.hade-finale-site { opacity: 0.85; margin: 0 0 0.8rem; }
+.hade-finale-src { font-size: 0.85rem; opacity: 0.85; }
+.hade-finale-src a, .hade-share-note a { color: #ffd43d; }
+.hade-finale .hade-btn-sub { color: #fff; border-color: #fff; }
+.hade-real { display: block; font-size: 0.9rem; margin-top: 0.6rem; }
+
+@media (prefers-reduced-motion: reduce) {
+  .hade-spot, .hade-gougai, .hade-stage.is-shake .hade-layer { animation: none; }
+}
