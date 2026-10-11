@@ -1,5 +1,5 @@
 // ===========================
-// 全然違うやつメーカー（あほらし館。yorozu-plans ROADMAP 7.46.2 K183、企画書 90、D315）
+// 全然違うやつメーカー（5000兆円欲しい館。yorozu-plans ROADMAP 7.46.2 K183、企画書 90、D315）
 // 名前（好きな語）を入れると、真顔で仲間が 4 つ並び、5 つ目だけ全然違うものが出る。
 // 結果は名前のハッシュで決める（同じ名前なら同じ結果。日付は混ぜない。「もう一回」は回数を混ぜて別の題）。
 // 名前は送らない・保存しない（fetch は札のファイルを読む 1 か所だけ）。札は ../scripts/chigau.json
@@ -88,7 +88,7 @@
     });
     g.fillStyle = '#fff'; g.font = 'bold 56px sans-serif'; g.fillText(t.line, 540, 1080);
     g.font = '38px sans-serif'; g.fillStyle = '#eadcf5';
-    g.fillText('全然違うやつメーカー（あほらし館）', 540, 1190);
+    g.fillText('全然違うやつメーカー（5000兆円欲しい館）', 540, 1190);
     g.fillText('yorozu-craft.com/hade/chigau/', 540, 1250);
     var text = t.line + '（全然違うやつメーカー）';
     c.toBlob(function (blob) {

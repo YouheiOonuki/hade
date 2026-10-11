@@ -69,7 +69,7 @@ test('共有の画像に名前は既定で入らない（選んだときだけ�
   assert.match(read('chigau/index.html'), /<input type="checkbox" id="share-name">/, '既定はチェックなし');
 });
 
-test('ページ: 「※演出です」・広告なし・noindex でない・英語版なし・sitemap にある・あほらし館の一覧にある・まじめな道具への道', () => {
+test('ページ: 「※演出です」・広告なし・noindex でない・英語版なし・sitemap にある・5000兆円欲しい館の一覧にある・まじめな道具への道', () => {
   const html = read('chigau/index.html');
   assert.ok(html.includes('※演出です'));
   assert.doesNotMatch(html, /adsbygoogle|googlesyndication|noindex|hreflang/);
