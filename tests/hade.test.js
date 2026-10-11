@@ -78,21 +78,32 @@ test('共有: URL に値を入れない（?from=share-nenmatsu だけ）。画�
   assert.match(js, /<input type="checkbox" id="share-real">/, '実額は自分で選んだときだけ');
 });
 
-test('ページ: 「※演出です」常時・広告なし・noindex でない・sitemap にある・英語版なし・まじめな版の lib を同じ URL で読む', () => {
-  const sm = read('sitemap.xml');
-  for (const [f, url] of [['index.html', 'https://yorozu-craft.com/hade/'], ['nenmatsu/index.html', 'https://yorozu-craft.com/hade/nenmatsu/']]) {
+test('ページ: 「※演出です」常時・広告なし・AdSense の結果までは noindex で sitemap なし（D310）・英語版なし・まじめな版の lib を同じ URL で読む', () => {
+  assert.ok(!fs.existsSync(path.join(ROOT, 'sitemap.xml')), 'D310: 結果が出るまで sitemap を持たない');
+  for (const f of ['index.html', 'nenmatsu/index.html']) {
     const html = read(f);
     assert.ok(html.includes('※演出です'), f);
     assert.doesNotMatch(html, /adsbygoogle|googlesyndication/, f);
-    assert.doesNotMatch(html, /noindex/, f);
+    assert.match(html, /<meta name="robots" content="noindex, follow">/, f);
     assert.doesNotMatch(html, /hreflang/, f);
-    assert.ok(sm.includes(`<loc>${url}</loc>`), f);
   }
   const page = read('nenmatsu/index.html');
   for (const lib of ['kyuyo-table-2026.js', 'kyuyo-table-2025.js', 'tax2026.js', 'nenmatsu.js']) assert.ok(page.includes(`<script src="/seido-keisan/lib/${lib}"></script>`), lib);
   assert.ok(page.indexOf('/seido-keisan/lib/nenmatsu.js') < page.indexOf('../engine.js'));
   assert.match(page, /まじめな版/);
   assert.ok(strip(read('engine.js')).includes("'※演出です（中身の計算はまじめな版と同じ）'"), '演出の舞台にも常時');
+});
+
+test('D311: 入力欄・ログインの偽装をしない、他社・Cloudflare・銀行・役所の名前を出さない', () => {
+  // 画面に出る文（台本・エンジン・ページの JS と、コメントとビーコンの script を除いた HTML）
+  const shown = [JSON.stringify(SCRIPT), strip(read('engine.js')), strip(read('nenmatsu/app.js')),
+    ...['index.html', 'nenmatsu/index.html'].map((f) => read(f).replace(/<!--[\s\S]*?-->/g, '').replace(/<script[^>]*cloudflareinsights[^>]*><\/script>/g, ''))];
+  for (const t of shown) {
+    assert.doesNotMatch(t, /type="(password|email|tel)"|パスワード|ログイン|サインイン|暗証/, '入力欄・ログインの偽装');
+    assert.doesNotMatch(t, /Cloudflare|Microsoft|Windows|Google|Apple|銀行|国税庁|税務署|市役所|区役所|役場/, '他社・役所の名前');
+  }
+  // 演出（エンジンと台本）は入力欄を作らない。入力欄はまじめな計算の欄と共有のチェックだけ
+  assert.doesNotMatch(strip(read('engine.js')) + JSON.stringify(SCRIPT), /<input|<form/);
 });
 
 test('点滅と音: CSS の点滅は 340ms 以上、視差効果を減らす設定で止める。音は既定で無音', () => {
