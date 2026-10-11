@@ -3,7 +3,8 @@
 // 台本（scripts/<道具>.json）の場面を順に再生し、最後に「決め」の画面で結果を出す。抽選や計算はしない（まじめな版の lib が出した値を受け取るだけ）。
 // 偽のエラー・再起動・確認の場面は持たない（D313。年末調整のド派手版とともに消した）。
 // 守ること: 「※演出です」を常に出す。本物の窓・履歴・閉じる確認・止まらない繰り返しを使わない。音は押してから（既定は無音）。
-//   点滅は 1 秒に 3 回まで（WCAG 2.3.1）。「視差効果を減らす」の設定なら演出を飛ばして決めの画面だけ。「飛ばす」を常に出す。
+//   点滅は 1 秒に 3 回まで（WCAG 2.3.1）。「視差効果を減らす」の設定なら黙って決めの画面だけ。「飛ばす」（小さな ×）を常に出す。
+//   説明の文は出さない（D324）。線は文でなく動きで守る
 // ブラウザでは window.Hade、Node（テスト）では module.exports（画面に触らない関数だけ）
 // ===========================
 (function (root) {
@@ -101,11 +102,11 @@
     var i = -1, timer = null, done = false;
     stage.hidden = false;
     stage.textContent = '';
-    var notice = el('p', 'hade-notice', '※演出です' + (script.noticeTail || ''));
+    var notice = el('p', 'hade-notice', '※演出です');
     var layer = el('div', 'hade-layer');
     var bar = el('div', 'hade-bar');
-    var skip = el('button', 'hade-skip', '飛ばす ▶▶');
-    skip.type = 'button';
+    var skip = el('button', 'hade-skip', '×');   // 飛ばす（D324: 文は出さず小さな × 1 つ。読み上げには「飛ばす」）
+    skip.type = 'button'; skip.setAttribute('aria-label', '飛ばす');
     var sound = el('button', 'hade-sound', audio.on ? '🔊 音あり' : '🔇 音なし');
     sound.type = 'button';
     sound.setAttribute('aria-pressed', String(audio.on));

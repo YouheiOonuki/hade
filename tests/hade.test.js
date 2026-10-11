@@ -18,7 +18,7 @@ const shownHtml = (f) => read(f).replace(/<!--[\s\S]*?-->/g, '').replace(/<scrip
 function scriptTexts(script) {
   const out = [];
   for (const v of Object.values(script.variants)) for (const s of v.scenes) for (const [k, val] of Object.entries(s)) if (typeof val === 'string' && !['type', 'href'].includes(k)) out.push(val);
-  return out.concat(script.noticeTail || []);
+  return out;
 }
 
 test('台本: 3 本、型・場面 3 つまで・ためは 3 秒まで・一言 20 字以内・点滅の周期・最後は決め・偽の警告の語が無い', () => {
@@ -95,12 +95,12 @@ test('ページ: 「※演出です」常時・広告なし・noindex でない�
     assert.doesNotMatch(html, /noindex/, f);
     assert.doesNotMatch(html, /hreflang/, f);
     assert.ok(sm.includes(`<loc>${url}</loc>`), f);
-    assert.match(html, /まじめな/, f + ': まじめな版への道');
+    if (f !== 'index.html') assert.match(html, /まじめな版/, f + ': まじめな版への道');
   }
   const page = read('roulette/index.html');
   assert.ok(page.includes('<script src="/web-roulette/pick.js"></script>'));
   assert.ok(page.indexOf('/web-roulette/pick.js') < page.indexOf('../engine.js'));
-  assert.ok(SCRIPT.noticeTail && strip(read('engine.js')).includes("'※演出です' + (script.noticeTail || '')"), '演出の舞台にも常時');
+  assert.ok(strip(read('engine.js')).includes("el('p', 'hade-notice', '※演出です')"), '演出の舞台にも常時');
 });
 
 test('D311: 入力欄・ログインの偽装をしない、他社・Cloudflare・銀行・役所の名前を出さない', () => {
@@ -119,7 +119,7 @@ test('点滅と音: CSS の点滅は 340ms 以上、視差効果を減らす設�
   assert.ok(m && Number(m[1]) >= H.FLASH_MIN_MS, m && m[1]);
   assert.match(css, /@media \(prefers-reduced-motion: reduce\) \{[\s\S]*hade-spot[\s\S]*animation: none[\s\S]*\.hade-confetti \{ display: none; \}/);
   assert.match(read('engine.js'), /var audio = \{ on: false, ctx: null \};/);
-  assert.match(read('engine.js'), /var skip = el\('button', 'hade-skip', '飛ばす ▶▶'\);/);
+  assert.match(read('engine.js'), /var skip = el\('button', 'hade-skip', '×'\);/);
 });
 
 test('D321 ワードアート: 館の見出し・決めの画面・共有の画像の 3 か所だけ。帯と文字の明るさの比 4.5:1 以上。点滅しない。まじめな版には無い', () => {
@@ -131,10 +131,29 @@ test('D321 ワードアート: 館の見出し・決めの画面・共有の画�
   const rule = css.match(/\.wordart \{[^}]*\}/)[0];
   assert.match(rule, /background: #1b1464; color: #ffe600/);
   assert.doesNotMatch(rule, /animation/);
-  for (const f of ['index.html', 'roulette/index.html', 'chigau/index.html']) assert.match(read(f), /<h1 class="wordart">/, f + ': 見出し');
+  for (const f of ['index.html', 'roulette/index.html']) assert.match(read(f), /<h1 class="wordart">/, f + ': 見出し');
   assert.match(read('roulette/app.js'), /'hade-finale-head wordart'/, '決めの画面');
-  assert.match(read('chigau/index.html'), /class="chigau-title wordart"/, '決めの画面');
-  for (const f of ['roulette/app.js', 'chigau/app.js']) assert.match(read(f), /root\.Wordart\.draw\(g, /, f + ': 共有の画像');
+  for (const f of ['roulette/app.js']) assert.match(read(f), /root\.Wordart\.draw\(g, /, f + ': 共有の画像');
   const serious = path.join(ROOT, '..', 'web-roulette', 'index.html');
   if (fs.existsSync(serious)) assert.doesNotMatch(fs.readFileSync(serious, 'utf8'), /wordart/i, 'まじめな版には入れない');
+});
+
+test('D324: 館の説明の文は無い。「※演出です」の札 1 つと「まじめな版」1 つだけ。「飛ばす」は小さな ×', () => {
+  const shownText = (f) => read(f).replace(/<!--[\s\S]*?-->/g, '').replace(/<script[\s\S]*?<\/script>/g, '').replace(/<head>[\s\S]*?<\/head>/, '');
+  for (const f of ['index.html', 'roulette/index.html']) {
+    const t = shownText(f);
+    assert.doesNotMatch(t, /演出が苦手|使い方|視差効果|大げさに決める|別館です|ための/, f);
+    assert.equal((t.match(/※演出です/g) || []).length, 1, f);
+    assert.doesNotMatch(t, /class="subtitle"/, f);
+  }
+  assert.equal((shownText('roulette/index.html').match(/まじめな版/g) || []).length, 1);
+  assert.doesNotMatch(strip(read('roulette/app.js')), /まじめな版/, '決めの画面にも出さない');
+  assert.match(read('engine.js'), /var skip = el\('button', 'hade-skip', '×'\);/);
+  assert.match(read('engine.js'), /skip\.setAttribute\('aria-label', '飛ばす'\)/);
+});
+
+test('D326: 全然違うやつメーカーは消した（/hade/chigau/ は root の _redirects で /hade/ へ）', () => {
+  assert.ok(!fs.existsSync(path.join(ROOT, 'chigau')));
+  assert.ok(!fs.existsSync(path.join(ROOT, 'scripts', 'chigau.json')));
+  assert.doesNotMatch(read('sitemap.xml') + read('index.html'), /chigau/);
 });
