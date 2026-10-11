@@ -2,9 +2,9 @@
 // 5000兆円欲しい館の演出エンジン（yorozu-plans ROADMAP 7.46、企画書 89・86、D303・D312・D313）
 // 台本（scripts/<道具>.json）の場面を順に再生し、最後に「決め」の画面で結果を出す。抽選や計算はしない（まじめな版の lib が出した値を受け取るだけ）。
 // 偽のエラー・再起動・確認の場面は持たない（D313。年末調整のド派手版とともに消した）。
-// 守ること: 「※演出です」を常に出す。本物の窓・履歴・閉じる確認・止まらない繰り返しを使わない。音は押してから（既定は無音）。
+// 守ること: 本物の窓・履歴・閉じる確認・止まらない繰り返しを使わない。音は押してから（既定は無音）。
 //   点滅は 1 秒に 3 回まで（WCAG 2.3.1）。「視差効果を減らす」の設定なら黙って決めの画面だけ。「飛ばす」（小さな ×）を常に出す。
-//   説明の文は出さない（D324）。線は文でなく動きで守る
+//   説明の文も「※演出です」も出さない（D324、オーナー 2026-10-11）。偽のエラー・警告の場面は持たない（D313）。線は文でなく動きで守る
 // ブラウザでは window.Hade、Node（テスト）では module.exports（画面に触らない関数だけ）
 // ===========================
 (function (root) {
@@ -102,7 +102,6 @@
     var i = -1, timer = null, done = false;
     stage.hidden = false;
     stage.textContent = '';
-    var notice = el('p', 'hade-notice', '※演出です');
     var layer = el('div', 'hade-layer');
     var bar = el('div', 'hade-bar');
     var skip = el('button', 'hade-skip', '×');   // 飛ばす（D324: 文は出さず小さな × 1 つ。読み上げには「飛ばす」）
@@ -111,7 +110,7 @@
     sound.type = 'button';
     sound.setAttribute('aria-pressed', String(audio.on));
     bar.appendChild(sound); bar.appendChild(skip);
-    stage.appendChild(notice); stage.appendChild(layer); stage.appendChild(bar);
+    stage.appendChild(layer); stage.appendChild(bar);
     sound.addEventListener('click', function () { audio.on = !audio.on; sound.textContent = audio.on ? '🔊 音あり' : '🔇 音なし'; sound.setAttribute('aria-pressed', String(audio.on)); });
     skip.addEventListener('click', function () { finish(); });
 
@@ -195,5 +194,6 @@
 
   api.play = play;
   api.audio = audio;
+  api.sfx = { beep: beep, drum: drum, fanfare: fanfare };   // 3D の盤（roulette/board3d.js）も同じ合成音を使う（音のファイルは持たない）
   root.Hade = api;
 })(this);

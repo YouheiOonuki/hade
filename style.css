@@ -182,6 +182,10 @@ details.opt > summary { cursor: pointer; color: var(--accent); font-weight: 600;
 .hade-tag { display: inline-block; font-size: 0.75rem; color: var(--muted); border: 1px solid var(--border); border-radius: 999px; padding: 0 0.6em; margin: 0.4rem 0; }
 .hade-door { display: block; text-align: center; font-size: clamp(1.8rem, 9vw, 3rem); font-weight: 900; padding: 1.2rem; border-radius: 16px; background: #1b1464; color: #ffe600; text-decoration: none; transform: rotate(-2deg); }
 .hade-skip { font-size: 1.4rem; line-height: 1; min-width: 44px; padding: 0.3rem 0.6rem; }
+/* 3D の盤（D325）: 舞台いっぱいの canvas。札と × は上に重ねる */
+.hade-3d { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.hade-stage > .hade-notice, .hade-skip-3d { position: relative; z-index: 2; }
+.hade-skip-3d { position: absolute; right: 0.6rem; bottom: 0.6rem; }
 
 @media (prefers-reduced-motion: reduce) {
   .hade-spot, .hade-gougai, .hade-stage.is-shake .hade-layer { animation: none; }

@@ -86,11 +86,10 @@ test('禁止の挙動が無い（本物の窓・閉じる確認・履歴の書�
   assert.match(read('roulette/app.js'), /fetch\('\.\.\/scripts\/roulette\.json'\)/);
 });
 
-test('ページ: 「※演出です」常時・広告なし・noindex でない・sitemap にある・英語版なし・まじめな版の lib を同じ URL で読む', () => {
+test('ページ: 広告なし・noindex でない・sitemap にある・英語版なし・まじめな版の lib を同じ URL で読む', () => {
   const sm = read('sitemap.xml');
   for (const [f, url] of [['index.html', 'https://yorozu-craft.com/hade/'], ['roulette/index.html', 'https://yorozu-craft.com/hade/roulette/']]) {
     const html = read(f);
-    assert.ok(html.includes('※演出です'), f);
     assert.doesNotMatch(html, /adsbygoogle|googlesyndication/, f);
     assert.doesNotMatch(html, /noindex/, f);
     assert.doesNotMatch(html, /hreflang/, f);
@@ -100,7 +99,6 @@ test('ページ: 「※演出です」常時・広告なし・noindex でない�
   const page = read('roulette/index.html');
   assert.ok(page.includes('<script src="/web-roulette/pick.js"></script>'));
   assert.ok(page.indexOf('/web-roulette/pick.js') < page.indexOf('../engine.js'));
-  assert.ok(strip(read('engine.js')).includes("el('p', 'hade-notice', '※演出です')"), '演出の舞台にも常時');
 });
 
 test('D311: 入力欄・ログインの偽装をしない、他社・Cloudflare・銀行・役所の名前を出さない', () => {
@@ -138,12 +136,12 @@ test('D321 ワードアート: 館の見出し・決めの画面・共有の画�
   if (fs.existsSync(serious)) assert.doesNotMatch(fs.readFileSync(serious, 'utf8'), /wordart/i, 'まじめな版には入れない');
 });
 
-test('D324: 館の説明の文は無い。「※演出です」の札 1 つと「まじめな版」1 つだけ。「飛ばす」は小さな ×', () => {
+test('D324（とオーナー 2026-10-11）: 館の説明の文も「※演出です」も無い。「まじめな版」1 つだけ。「飛ばす」は小さな ×', () => {
   const shownText = (f) => read(f).replace(/<!--[\s\S]*?-->/g, '').replace(/<script[\s\S]*?<\/script>/g, '').replace(/<head>[\s\S]*?<\/head>/, '');
   for (const f of ['index.html', 'roulette/index.html']) {
     const t = shownText(f);
     assert.doesNotMatch(t, /演出が苦手|使い方|視差効果|大げさに決める|別館です|ための/, f);
-    assert.equal((t.match(/※演出です/g) || []).length, 1, f);
+    assert.doesNotMatch(t, /※演出です/, f);
     assert.doesNotMatch(t, /class="subtitle"/, f);
   }
   assert.equal((shownText('roulette/index.html').match(/まじめな版/g) || []).length, 1);
@@ -156,4 +154,43 @@ test('D326: 全然違うやつメーカーは消した（/hade/chigau/ は root 
   assert.ok(!fs.existsSync(path.join(ROOT, 'chigau')));
   assert.ok(!fs.existsSync(path.join(ROOT, 'scripts', 'chigau.json')));
   assert.doesNotMatch(read('sitemap.xml') + read('index.html'), /chigau/);
+});
+
+test('K180 第 2 版（3D の盤）: three.js と LICENSE が vendor に。盤の JS は押してから import()。WebGL 無し・視差効果を減らす設定は 2D。音は押すまで鳴らない', () => {
+  assert.ok(fs.existsSync(path.join(ROOT, 'vendor', 'three', 'three.module.min.js')));
+  assert.match(read('vendor/three/LICENSE'), /MIT License/);
+  const html = read('roulette/index.html');
+  assert.doesNotMatch(html, /board3d|three/, '初回の HTML は盤を読まない');
+  const js = strip(read('roulette/app.js'));
+  assert.match(js, /import\('\.\/board3d\.js'\)/);
+  assert.ok(js.indexOf("import('./board3d.js')") > js.indexOf("$('form').addEventListener('submit'"), '回すを押してから読む');
+  assert.match(js, /prefers-reduced-motion: reduce\)'\)\.matches\) return false/);
+  assert.match(js, /getContext\('webgl2'\) \|\| c\.getContext\('webgl'\)/);
+  assert.match(js, /\.then\(function \(\) \{ play2d\(rest\); \}, function \(\) \{ play2d\(script\); \}\);/, '読めない・描けないときは 2D');
+  assert.match(read('engine.js'), /var audio = \{ on: false, ctx: null \};/, '既定は無音');
+  assert.ok(js.indexOf('H.audio.on = true') > js.indexOf("$('form').addEventListener('submit'"), '音は回すを押した後');
+  const b3 = strip(read('roulette/board3d.js'));
+  assert.match(b3, /from '\.\.\/vendor\/three\/three\.module\.min\.js'/, 'CDN を使わない');
+  assert.match(b3, /CONFETTI_MAX = 300/);
+  assert.match(b3, /setPixelRatio\(Math\.min\(2, window\.devicePixelRatio \|\| 1\)\)/);
+  // 初回の JS（盤を押す前）は 1 MB 以内。盤を読んだ後も gzip で 300 KB 以内
+  const zlib = require('node:zlib');
+  const first = ['../web-roulette/pick.js', 'engine.js', 'wordart.js', 'roulette/app.js'].map((f) => fs.readFileSync(path.join(ROOT, f)));
+  const firstBytes = first.reduce((n, b) => n + b.length, 0);
+  const all = [...first, fs.readFileSync(path.join(ROOT, 'roulette/board3d.js')), fs.readFileSync(path.join(ROOT, 'vendor/three/three.module.min.js'))];
+  const gz = all.reduce((n, b) => n + zlib.gzipSync(b).length, 0);
+  assert.ok(firstBytes < 1024 * 1024, String(firstBytes));
+  assert.ok(gz < 300 * 1024, `gzip ${gz}`);
+});
+
+test('K180 第 2 版: 盤は抽選の当たりの扇形で止まる（角度の式。画面で 4・6・10 で確かめた形）', async () => {
+  const { targetAngle } = await import('../roulette/board3d.js');
+  for (const n of [2, 4, 6, 10, 30]) for (let i = 0; i < n; i++) {
+    const step = (Math.PI * 2) / n;
+    const a = targetAngle(i, n, 7);
+    // 盤の角度 0 のとき扇形 i の真ん中は (i+0.5)*step − π/2。回した後の真ん中が針（π/2）に来る
+    const mid = ((i + 0.5) * step - Math.PI / 2 + a) % (Math.PI * 2);
+    assert.ok(Math.abs(mid - Math.PI / 2) < 1e-9, `${i}/${n}`);
+    assert.ok(a > 6 * Math.PI * 2, '十分に回ってから止まる');
+  }
 });
