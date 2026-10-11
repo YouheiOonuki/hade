@@ -132,16 +132,7 @@ details.opt > summary { cursor: pointer; color: var(--accent); font-weight: 600;
 .hade-stage.is-shake .hade-layer { animation: hade-shake 0.5s linear infinite; }
 @keyframes hade-shake { 0%, 100% { transform: translate(0, 0); } 25% { transform: translate(-4px, 2px); } 50% { transform: translate(3px, -3px); } 75% { transform: translate(-2px, -2px); } }
 
-.hade-confirm-q { font-size: clamp(1.4rem, 5vw, 2.2rem); font-weight: 800; margin-bottom: 1rem; }
-/* 偽エラー: OS の画面とは見分けがつく形（顔文字・「※演出です」・停止コードはふざけた名前） */
-.hade-err { background: #1f4fbf; padding: 2rem 1.4rem; border-radius: 12px; max-width: 34rem; text-align: left; }
-.hade-err-face { font-size: 3rem; margin: 0 0 0.6rem; }
-.hade-err-title { font-size: 1.5rem; font-weight: 800; margin: 0 0 0.4rem; }
-.hade-err-body { font-size: 1.15rem; margin: 0 0 1rem; }
-.hade-err-code, .hade-err-pct { font-family: ui-monospace, monospace; opacity: 0.9; margin: 0.2rem 0; }
-.hade-reboot { font-family: ui-monospace, monospace; text-align: left; max-width: 34rem; }
-.hade-reboot-title { font-size: 1.3rem; font-weight: 700; }
-.hade-reboot-dots { font-size: 1.6rem; letter-spacing: 0.3em; }
+/* ため（ドラムロールとスポット）・スロット */
 .hade-drum-title, .hade-slot-title { font-size: clamp(1.5rem, 6vw, 2.6rem); font-weight: 800; }
 .hade-spot { width: 9rem; height: 9rem; margin: 1rem auto; border-radius: 50%; background: radial-gradient(circle, #ffd43d, #e0a066 60%, transparent 70%); animation: hade-flash 400ms steps(2) infinite; }
 @keyframes hade-flash { 0% { opacity: 1; } 50% { opacity: 0.35; } }
@@ -168,8 +159,21 @@ details.opt > summary { cursor: pointer; color: var(--accent); font-weight: 600;
 .hade-finale-src { font-size: 0.85rem; opacity: 0.85; }
 .hade-finale-src a, .hade-share-note a { color: #ffd43d; }
 .hade-finale .hade-btn-sub { color: #fff; border-color: #fff; }
-.hade-real { display: block; font-size: 0.9rem; margin-top: 0.6rem; }
+
+.hade-roll { font-size: clamp(1.6rem, 7vw, 2.8rem); font-weight: 800; min-height: 1.4em; margin: 0.4rem 0; overflow-wrap: anywhere; }
+
+/* 決めの画面の当たり（大写し）と紙吹雪（点滅しない。落ちるだけ） */
+.hade-finale-win { font-size: clamp(2.2rem, 11vw, 4.4rem); font-weight: 900; margin: 0.2rem 0; overflow-wrap: anywhere; }
+.hade-finale-line { font-size: 1.25rem; font-weight: 700; margin: 0.4rem 0 0.8rem; }
+.hade-share-pick { display: block; font-size: 0.9rem; margin-top: 0.6rem; }
+.hade-confetti { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+.hade-confetti i { position: absolute; top: -2rem; width: 0.6rem; height: 1rem; animation: hade-fall 2.4s linear forwards; }
+@keyframes hade-fall { to { transform: translateY(110vh) rotate(540deg); } }
+
+/* 入力（まじめな版と同じ: 候補を貼る・当たりの数） */
+.hade-textarea { font: inherit; width: 100%; box-sizing: border-box; min-height: 9rem; padding: 0.5rem 0.6rem; border: 1px solid var(--input-border); border-radius: 6px; background: var(--card); color: var(--text); }
 
 @media (prefers-reduced-motion: reduce) {
   .hade-spot, .hade-gougai, .hade-stage.is-shake .hade-layer { animation: none; }
+  .hade-confetti { display: none; }
 }
