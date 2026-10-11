@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ルーレット（あほらし館）—— 当たりはまじめ、発表だけ大げさ｜yorozu-craft</title>
+  <meta name="description" content="候補を貼って回すと、ドラムロールと号外つきで当たりを大げさに発表するルーレット（※演出です）。当たりの決め方はまじめなルーレットと同じ。入力は端末の外に出ません。広告なし。">
+  <link rel="canonical" href="https://yorozu-craft.com/hade/roulette/">
+  <meta property="og:title" content="ルーレット（あほらし館）｜yorozu-craft">
+  <meta property="og:description" content="当たりはまじめ、発表だけ大げさ。賞金 5000兆円（支払いは気持ち）。※演出です">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://yorozu-craft.com/hade/roulette/">
+  <meta property="og:site_name" content="yorozu-craft">
+  <meta property="og:locale" content="ja_JP">
+  <meta name="twitter:card" content="summary">
+  <meta name="theme-color" content="#5b2a86">
+  <!-- 広告なし（演出のページは本文が少ないので収益の場にしない。D303・D312）。英語版は作らない（笑いは訳せない）。AdSense はサイト所有の確認の meta だけ（広告の script は無い） -->
+  <meta name="google-adsense-account" content="ca-pub-5375267956079717">
+  <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+  <header class="app-header">
+    <h1>ルーレット（あほらし館）</h1>
+    <p class="subtitle">当たりはまじめ、発表だけ大げさ。当たりの決め方は<a href="/web-roulette/">まじめなルーレット</a>と同じです。</p>
+  </header>
+
+  <main class="app-main">
+    <p class="hade-notice-top">※演出です。広告なし・入力は端末の外に出ません。音は押したときだけ鳴ります。</p>
+
+    <p id="lib-error" class="card" hidden>抽選の部品を読み込めませんでした。<a href="/web-roulette/">まじめなルーレット</a>で回してください。</p>
+
+    <form id="form" class="card" autocomplete="off">
+      <div class="field">
+        <label for="items">候補（1 行に 1 つ）</label>
+        <textarea id="items" class="hade-textarea" rows="6">カレー
+ラーメン
+寿司
+焼肉
+パスタ</textarea>
+      </div>
+      <div class="field">
+        <label for="count">当たりの数</label>
+        <select id="count"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select>
+      </div>
+      <button type="submit" id="go" class="hade-btn hade-go" disabled>回す（大げさに）</button>
+      <p id="msg" class="hint" aria-live="polite"></p>
+    </form>
+
+    <section id="stage" class="hade-stage" hidden aria-live="polite"></section>
+
+    <p class="small">飲み会の幹事決め、授業の当番、会議の発表順を、大画面に映して大げさに決めるための別館です。発表の言葉は毎回 3 通りから選ばれます。演出が苦手な人は、端末の「視差効果を減らす」を入れると結果だけが出ます。重み付け・履歴・お題の読み込みは<a href="/web-roulette/">まじめなルーレット</a>にあります。</p>
+    <p class="small">ほかの別館 → <a href="../">あほらし館</a></p>
+  </main>
+
+  <footer class="app-footer">
+    <nav class="footer-nav" aria-label="フッターナビゲーション">
+      <ul>
+        <li><a href="../../">yorozu-craft トップ</a></li>
+        <li><a href="../">あほらし館</a></li>
+        <li><a href="/web-roulette/">ルーレット（まじめな版）</a></li>
+        <li><a href="../../about.html">運営者情報</a></li>
+        <li><a href="../../privacy-policy.html">プライバシーポリシー</a></li>
+      </ul>
+    </nav>
+    <p>&copy; 2026 yorozu-craft. All rights reserved.</p>
+  </footer>
+
+  <!-- 当たりはまじめな版の lib を同じ URL で読む（写しを持たない。D312） -->
+  <script src="/web-roulette/pick.js"></script>
+  <script src="../engine.js"></script>
+  <script src="./app.js"></script>
+  <!-- Cloudflare Web Analytics（Cookie を使わないアクセス解析） --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "b79bf821e1fd4b6683866d493b1de426"}'></script><!-- End Cloudflare Web Analytics -->
+</body>
+</html>

@@ -1,6 +1,7 @@
 // ===========================
-// ド派手版の演出エンジン（yorozu-plans ROADMAP 7.39.1 K170、企画書 86、D300・D303）
-// 台本（scripts/<道具>.json）の場面を順に再生し、最後に「決め」の画面で結果を出す。計算はしない（まじめな版の lib が出した値を受け取るだけ）。
+// あほらし館の演出エンジン（yorozu-plans ROADMAP 7.46、企画書 89・86、D303・D312・D313）
+// 台本（scripts/<道具>.json）の場面を順に再生し、最後に「決め」の画面で結果を出す。抽選や計算はしない（まじめな版の lib が出した値を受け取るだけ）。
+// 偽のエラー・再起動・確認の場面は持たない（D313。年末調整のド派手版とともに消した）。
 // 守ること: 「※演出です」を常に出す。本物の窓・履歴・閉じる確認・止まらない繰り返しを使わない。音は押してから（既定は無音）。
 //   点滅は 1 秒に 3 回まで（WCAG 2.3.1）。「視差効果を減らす」の設定なら演出を飛ばして決めの画面だけ。「飛ばす」を常に出す。
 // ブラウザでは window.Hade、Node（テスト）では module.exports（画面に触らない関数だけ）
@@ -8,20 +9,13 @@
 (function (root) {
   'use strict';
 
-  var TYPES = ['confirm', 'fakeError', 'reboot', 'drumroll', 'slot', 'gougai', 'cm', 'finale'];
+  var TYPES = ['drumroll', 'slot', 'gougai', 'cm', 'finale'];
   var FLASH_MIN_MS = 340;          // 点滅 1 回の周期の下限（1 秒に 3 回まで → 333ms 以上。余裕を持って 340）
   var SCENE_MAX_MS = 6000;         // 1 場面の長さの上限（もったいぶっても待たせすぎない）
   var TOTAL_MAX_MS = 30000;        // 台本全体の上限
-
-  /** 円の表示（3 桁区切り） */
-  function yen(n) { return Math.round(n).toLocaleString('ja-JP') + '円'; }
-
-  /** 共有の画像に出す金額のぼかし（既定）。1 万円以上は「N 万円台」、未満は「1 万円未満」 */
-  function blurYen(n) {
-    var a = Math.abs(Math.round(n));
-    if (a < 10000) return '1万円未満';
-    return Math.floor(a / 10000).toLocaleString('ja-JP') + '万円台';
-  }
+  var SCENES_MAX = 3;              // 決めの前の場面は 3 つまで（企画書 89 の台本の決まり）
+  var TAME_MAX_MS = 3000;          // ため（drumroll）は 3 秒まで
+  var LINE_MAX = 20;               // 決めの一言は 20 字まで
 
   /** 文の中の {name} を値で置き換える（値に無い名前はそのまま） */
   function fill(text, vals) {
@@ -39,11 +33,15 @@
       var scenes = script.variants[v].scenes || [];
       var total = 0;
       if (!scenes.length || scenes[scenes.length - 1].type !== 'finale') errors.push(v + ': 最後は finale');
+      if (scenes.length - 1 > SCENES_MAX) errors.push(v + ': 場面が多い ' + (scenes.length - 1));
+      var fin = scenes[scenes.length - 1] || {};
+      if (fin.type === 'finale' && !(fin.line && Array.from(fin.line).length <= LINE_MAX)) errors.push(v + ': 決めの一言は 1〜' + LINE_MAX + ' 字');
       scenes.forEach(function (s, i) {
         var at = v + '[' + i + ']';
         if (TYPES.indexOf(s.type) < 0) errors.push(at + ': 型 ' + s.type);
         var ms = s.ms || 0;
         if (ms > SCENE_MAX_MS) errors.push(at + ': 長すぎる ' + ms);
+        if (s.type === 'drumroll' && ms > TAME_MAX_MS) errors.push(at + ': ためが長い ' + ms);
         total += ms;
         if (s.flashMs != null && s.flashMs < FLASH_MIN_MS) errors.push(at + ': 点滅が速い ' + s.flashMs);
         var text = JSON.stringify(s);
@@ -61,7 +59,7 @@
     return scenes.slice();
   }
 
-  var api = { TYPES: TYPES, FLASH_MIN_MS: FLASH_MIN_MS, SCENE_MAX_MS: SCENE_MAX_MS, TOTAL_MAX_MS: TOTAL_MAX_MS, yen: yen, blurYen: blurYen, fill: fill, validate: validate, plan: plan };
+  var api = { TYPES: TYPES, FLASH_MIN_MS: FLASH_MIN_MS, SCENE_MAX_MS: SCENE_MAX_MS, TOTAL_MAX_MS: TOTAL_MAX_MS, SCENES_MAX: SCENES_MAX, TAME_MAX_MS: TAME_MAX_MS, LINE_MAX: LINE_MAX, fill: fill, validate: validate, plan: plan };
   if (typeof module !== 'undefined' && module.exports) { module.exports = api; return; }
 
   // ---------------------------------------------------------------
@@ -103,7 +101,7 @@
     var i = -1, timer = null, done = false;
     stage.hidden = false;
     stage.textContent = '';
-    var notice = el('p', 'hade-notice', '※演出です（中身の計算はまじめな版と同じ）');
+    var notice = el('p', 'hade-notice', '※演出です' + (script.noticeTail || ''));
     var layer = el('div', 'hade-layer');
     var bar = el('div', 'hade-bar');
     var skip = el('button', 'hade-skip', '飛ばす ▶▶');
@@ -140,48 +138,21 @@
     return { skip: finish };
   }
 
-  // 場面の型。ms の場面は時間で次へ、confirm は押して次へ
+  // 場面の型。どれも ms で次へ
   var SCENES = {
-    confirm: function (layer, s, vals, go) {
-      var box = el('div', 'hade-confirm');
-      var steps = s.steps || [];
-      var k = 0;
-      var q = el('p', 'hade-confirm-q'), b = el('button', 'hade-btn');
-      b.type = 'button';
-      function show() { q.textContent = fill(steps[k].q, vals); b.textContent = steps[k].yes; beep(440 + k * 120, 0.12); }
-      b.addEventListener('click', function () { k++; if (k < steps.length) show(); else go(); });
-      box.appendChild(q); box.appendChild(b); layer.appendChild(box);
-      show();
-      b.focus();
-    },
-    fakeError: function (layer, s, vals) {
-      var box = el('div', 'hade-err');
-      box.appendChild(el('p', 'hade-err-face', s.face || '(>_<)'));
-      box.appendChild(el('p', 'hade-err-title', fill(s.title, vals)));
-      box.appendChild(el('p', 'hade-err-body', fill(s.body, vals)));
-      box.appendChild(el('p', 'hade-err-code', fill(s.code, vals)));
-      var pct = el('p', 'hade-err-pct', '0%');
-      box.appendChild(pct);
-      layer.appendChild(box);
-      var n = 0, t = setInterval(function () { n = Math.min(100, n + 7 + Math.floor(Math.random() * 9)); pct.textContent = n + '% 完了'; if (n >= 100) clearInterval(t); }, 180);
-      beep(150, 0.5, 'sawtooth', 0.07); vibrate([120, 60, 120]);
-    },
-    reboot: function (layer, s, vals) {
-      var box = el('div', 'hade-reboot');
-      box.appendChild(el('p', 'hade-reboot-title', fill(s.title, vals)));
-      var dots = el('p', 'hade-reboot-dots', '');
-      box.appendChild(dots);
-      (s.lines || []).forEach(function (line, j) { setTimeout(function () { box.appendChild(el('p', 'hade-reboot-line', '> ' + fill(line, vals))); beep(880, 0.03, 'square', 0.03); }, 400 + j * 420); });
-      layer.appendChild(box);
-      var d = 0, t = setInterval(function () { d = (d + 1) % 4; dots.textContent = '●'.repeat(d) + '○'.repeat(3 - d); }, 400);
-      setTimeout(function () { clearInterval(t); }, (s.ms || 3000));
-    },
     drumroll: function (layer, s, vals) {
       var box = el('div', 'hade-drum');
       box.appendChild(el('p', 'hade-drum-title', fill(s.title, vals)));
       var spot = el('div', 'hade-spot');
       if (s.flashMs) spot.style.animationDuration = Math.max(FLASH_MIN_MS, s.flashMs) + 'ms';
       box.appendChild(spot);
+      // roll: 候補の名前を回して見せる（vals.names。当たりは決めの画面まで出さない）
+      if (s.roll && vals.names && vals.names.length) {
+        var name = el('p', 'hade-roll', '');
+        box.appendChild(name);
+        var k = 0, t = setInterval(function () { name.textContent = vals.names[k++ % vals.names.length]; }, 90);
+        setTimeout(function () { clearInterval(t); }, Math.min(s.ms || 2500, TAME_MAX_MS));
+      }
       layer.appendChild(box);
       layer.parentNode.classList.add('is-shake');
       drum((s.ms || 2500) / 1000); vibrate([40, 40, 40, 40, 40, 40]);
