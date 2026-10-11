@@ -79,7 +79,7 @@ test('共有: URL に値を入れない（?from=share-nenmatsu だけ）。画�
 });
 
 test('ページ: 「※演出です」常時・広告なし・AdSense の結果までは noindex で sitemap なし（D310）・英語版なし・まじめな版の lib を同じ URL で読む', () => {
-  assert.ok(!fs.existsSync(path.join(ROOT, 'sitemap.xml')), 'D310: 結果が出るまで sitemap を持たない');
+  assert.doesNotMatch(read('sitemap.xml'), /<loc>/, 'D310: 結果が出るまで sitemap に URL を載せない（ファイルと robots の行は配信の一覧なので残す）');
   for (const f of ['index.html', 'nenmatsu/index.html']) {
     const html = read(f);
     assert.ok(html.includes('※演出です'), f);
