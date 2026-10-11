@@ -1,5 +1,5 @@
 // ===========================
-// ルーレット（あほらし館）のページ（yorozu-plans ROADMAP 7.46.1 K180、企画書 89、D312）
+// ルーレット（5000兆円欲しい館）のページ（yorozu-plans ROADMAP 7.46.1 K180、企画書 89、D312）
 // 当たりはまじめなルーレットの /web-roulette/pick.js（window.RoulettePick）を同じ URL で読んで決める（写しを持たない）。
 // このファイルは入力を集めて pickMultiple に渡し、台本（../scripts/roulette.json）を 1 本選んで演出に渡すだけ。入力はどこにも送らない・保存しない
 // ブラウザでは画面を動かし、Node（テスト）では draw と shareLines を module.exports
@@ -64,7 +64,7 @@
     add('p', 'hade-finale-head', f.head || '');
     add('p', 'hade-finale-win', res.winners.join('、'));
     add('p', 'hade-finale-line', f.line || '');
-    add('p', 'hade-finale-site', 'yorozu-craft.com / あほらし館');
+    add('p', 'hade-finale-site', 'yorozu-craft.com / 5000兆円欲しい館');
     var btns = doc.createElement('div'); btns.className = 'hade-finale-btns'; box.appendChild(btns);
     var again = doc.createElement('button'); again.type = 'button'; again.className = 'hade-btn'; again.textContent = 'もう一回'; btns.appendChild(again);
     var share = doc.createElement('button'); share.type = 'button'; share.className = 'hade-btn hade-btn-sub'; share.textContent = '共有する'; btns.appendChild(share);
@@ -105,9 +105,9 @@
     g.fillStyle = '#fff'; g.font = 'bold 84px sans-serif'; g.fillText(t.win.length > 14 ? t.win.slice(0, 13) + '…' : t.win, 540, 620);
     g.font = 'bold 60px sans-serif'; g.fillText(t.line, 540, 820);
     g.font = '40px sans-serif'; g.fillStyle = '#eadcf5';
-    g.fillText('あほらし館のルーレット ※演出です', 540, 1120);
+    g.fillText('5000兆円欲しい館のルーレット ※演出です', 540, 1120);
     g.fillText('yorozu-craft.com/hade/roulette/', 540, 1190);
-    var text = t.line + '（あほらし館のルーレット）';
+    var text = t.line + '（5000兆円欲しい館のルーレット）';
     c.toBlob(function (blob) {
       var file = new File([blob], 'hade-roulette.png', { type: 'image/png' });
       if (root.navigator.canShare && root.navigator.canShare({ files: [file] })) {

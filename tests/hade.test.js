@@ -1,4 +1,4 @@
-// あほらし館（yorozu-plans ROADMAP 7.46.1 K180、企画書 89、ACCEPTANCE「K180」）のテスト: node --test tests/hade.test.js
+// 5000兆円欲しい館（yorozu-plans ROADMAP 7.46.1 K180、企画書 89、ACCEPTANCE「K180」）のテスト: node --test tests/hade.test.js
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
