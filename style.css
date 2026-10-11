@@ -173,6 +173,13 @@ details.opt > summary { cursor: pointer; color: var(--accent); font-weight: 600;
 /* 入力（まじめな版と同じ: 候補を貼る・当たりの数） */
 .hade-textarea { font: inherit; width: 100%; box-sizing: border-box; min-height: 9rem; padding: 0.5rem 0.6rem; border: 1px solid var(--input-border); border-radius: 6px; background: var(--card); color: var(--text); }
 
+/* ワードアート（D321）: 見出し・決めの画面だけ。濃い紺の帯に黄色の太字（コントラストは帯に対して測る）、虹色の段の影、斜め。点滅しない。共有の画像は wordart.js が同じ色で描く */
+.wordart { display: inline-block; padding: 0.1em 0.45em; background: #1b1464; color: #ffe600; font-weight: 900; font-style: italic; letter-spacing: 0.03em;
+  transform: rotate(-3deg) skewX(-10deg); -webkit-text-stroke: 1px #c2185b; paint-order: stroke fill; border-radius: 0.15em;
+  text-shadow: 1px 1px 0 #ff1744, 2px 2px 0 #ff9100, 3px 3px 0 #00c853, 4px 4px 0 #2979ff; }
+.app-header h1.wordart { color: #ffe600; font-size: 1.8rem; margin: 0.4rem 0 0.6rem; }
+.hade-finale-head.wordart, .chigau-title.wordart { color: #ffe600; }
+
 /* 全然違うやつメーカー（K183） */
 .chigau-input { font: inherit; font-size: 1.1rem; padding: 0.45rem 0.6rem; border: 1px solid var(--input-border); border-radius: 6px; background: var(--card); color: var(--text); min-height: 44px; width: 100%; max-width: 20rem; box-sizing: border-box; }
 .chigau-result { text-align: center; }
