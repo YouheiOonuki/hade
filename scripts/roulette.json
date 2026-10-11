@@ -6,7 +6,7 @@
     "gougai": {
       "scenes": [
         { "type": "drumroll", "ms": 3000, "title": "運命の抽選を始めます", "flashMs": 400, "roll": true },
-        { "type": "gougai", "ms": 2600, "paper": "号外（※演出です）", "head": "当選者 {count} 名", "sub": "{winner}" },
+        { "type": "gougai", "ms": 2600, "paper": "号外", "head": "当選者 {count} 名", "sub": "{winner}" },
         { "type": "finale", "head": "当選", "line": "賞金 5000兆円（支払いは気持ち）" }
       ]
     },
@@ -20,7 +20,7 @@
     "rekishi": {
       "scenes": [
         { "type": "drumroll", "ms": 3000, "title": "宇宙の意思を確かめています", "flashMs": 400, "roll": true },
-        { "type": "gougai", "ms": 2600, "paper": "号外（※演出です）", "head": "歴史が動きました", "sub": "{winner}" },
+        { "type": "gougai", "ms": 2600, "paper": "号外", "head": "歴史が動きました", "sub": "{winner}" },
         { "type": "finale", "head": "決定", "line": "全人類が拍手しています" }
       ]
     }

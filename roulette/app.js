@@ -15,7 +15,7 @@
     if (names.length < 2) return { ok: false, message: '候補を 2 つ以上、1 行に 1 つずつ入れてください。' };
     var n = Math.max(1, Math.min(COUNT_MAX, Math.floor(count) || 1, names.length));
     var picked = Pick.pickMultiple(names.map(function (name) { return { name: name, weight: 1 }; }), n, false, rand);
-    return { ok: true, names: names, winners: picked.map(function (r) { return r.candidate.name; }) };
+    return { ok: true, names: names, winners: picked.map(function (r) { return r.candidate.name; }), indexes: picked.map(function (r) { return r.index; }) };
   }
 
   /** 共有の画像に書く行。当たりの名前は利用者が入れたものなので、withNames のときだけ入れる（既定は入れない） */
@@ -53,8 +53,26 @@
     var variant = keys[Math.floor(Math.random() * keys.length)];
     var vals = { winner: res.winners.join('、'), count: String(res.winners.length), names: res.names };
     $('form').hidden = true;
-    H.play($('stage'), script, variant, vals, function (layer, f) { finale(layer, f, res); });
+    H.audio.on = true;   // 音は「回す」を押した後だけ（ROADMAP 7.57.1）。舞台の 🔊 で消せる
+    var stage = $('stage');
+    var play2d = function (sc) { H.play(stage, sc, variant, vals, function (layer, f) { finale(layer, f, res); }); };
+    if (!use3d()) { play2d(script); return; }
+    // 3D の盤（D325）: 押してから読む。盤が止まって紙吹雪が落ちたら、ため（drumroll）を除いた台本で号外と決めへ
+    stage.hidden = false; stage.textContent = '';
+    var x = doc.createElement('button'); x.type = 'button'; x.className = 'hade-skip hade-skip-3d'; x.textContent = '×'; x.setAttribute('aria-label', '飛ばす');
+    x.addEventListener('click', function () { stage.dispatchEvent(new Event('hade:skip')); });
+    stage.appendChild(x);
+    var rest = { variants: {} };
+    rest.variants[variant] = { scenes: script.variants[variant].scenes.filter(function (s) { return s.type !== 'drumroll'; }) };
+    import('./board3d.js').then(function (m) { return m.spin(stage, res.names, res.indexes[0], H.sfx); })
+      .then(function () { play2d(rest); }, function () { play2d(script); });   // 読めない・描けないときは 2D
   });
+
+  /** 3D で回すか: WebGL があり、視差効果を減らす設定でないとき（そうでなければ黙って 2D） */
+  function use3d() {
+    if (root.matchMedia && root.matchMedia('(prefers-reduced-motion: reduce)').matches) return false;
+    try { var c = doc.createElement('canvas'); return !!(c.getContext('webgl2') || c.getContext('webgl')); } catch (err) { return false; }
+  }
 
   /** 決めの画面: 大写しの当たり・一言・サイト名・ボタン（もう一回・共有・まじめな版）と紙吹雪 */
   function finale(layer, f, res) {
@@ -104,7 +122,7 @@
     g.fillStyle = '#fff'; g.font = 'bold 84px sans-serif'; g.fillText(t.win.length > 14 ? t.win.slice(0, 13) + '…' : t.win, 540, 620);
     g.font = 'bold 60px sans-serif'; g.fillText(t.line, 540, 820);
     g.font = '40px sans-serif'; g.fillStyle = '#eadcf5';
-    g.fillText('5000兆円欲しい館のルーレット ※演出です', 540, 1120);
+    g.fillText('5000兆円欲しい館のルーレット', 540, 1120);
     g.fillText('yorozu-craft.com/hade/roulette/', 540, 1190);
     var text = t.line + '（5000兆円欲しい館のルーレット）';
     c.toBlob(function (blob) {
