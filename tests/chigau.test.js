@@ -1,4 +1,4 @@
-// 全然違うやつメーカー（yorozu-plans ROADMAP 7.46.2 K183、企画書 90、ACCEPTANCE「K183」）のテスト: node --test tests/chigau.test.js
+// 全然違うやつメーカー（矛盾塊の形。yorozu-plans ROADMAP 7.55 D322、企画書 90、ACCEPTANCE「K183」）のテスト: node --test tests/chigau.test.js
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
@@ -9,45 +9,72 @@ const read = (f) => fs.readFileSync(path.join(ROOT, f), 'utf8');
 const CARDS = JSON.parse(read('scripts/chigau.json'));
 const NG_WORDS = Object.values(JSON.parse(read('ng-words.json')).categories).flat();
 const strip = (js) => js.replace(/\/\*[\s\S]*?\*\//g, '').replace(/(^|[^:'"])\/\/.*$/gm, '$1');
-const len = (s) => Array.from(s).length;
+const FIELDS = ['name', 'emoji', 'sound', 'alias'];
 
-test('札の数と形: 題 50（各 5 組 × 4 語）・違うやつ 150・一言は 20 字以内。重なりなし', () => {
-  assert.equal(CARDS.themes.length, 50);
-  for (const t of CARDS.themes) {
-    assert.ok(len(t.title) >= 1 && len(t.title) <= 8, t.title);
-    assert.equal(t.groups.length, 5, t.title);
-    const words = t.groups.flat();
-    for (const g of t.groups) assert.equal(g.length, 4, t.title);
-    assert.equal(new Set(words).size, words.length, t.title + ': 同じ題の中で重なり');
-    for (const w of words) assert.ok(len(w) >= 1 && len(w) <= 8, w);
+test('「もの」の札: 50。4 つの欄がそろい、どの欄も札どうしで重ならない（重なると偶然合ってしまう）', () => {
+  assert.equal(CARDS.things.length, 50);
+  for (const f of FIELDS) {
+    const vals = CARDS.things.map((t) => t[f]);
+    assert.ok(vals.every((v) => typeof v === 'string' && v.length > 0), f);
+    assert.equal(new Set(vals).size, vals.length, f + ' に重なり');
   }
-  assert.equal(CARDS.odd.length, 150);
-  assert.equal(new Set(CARDS.odd).size, 150, '違うやつに重なり');
-  for (const w of CARDS.odd) assert.ok(len(w) >= 1 && len(w) <= 8, w);
-  const members = new Set(CARDS.themes.flatMap((t) => t.groups.flat()));
-  for (const w of CARDS.odd) assert.ok(!members.has(w), `違うやつ「${w}」が仲間の側にもある`);
-  assert.ok(CARDS.lines.length >= 5);
-  for (const l of CARDS.lines) assert.ok(len(l) >= 1 && len(l) <= 20, l);
+  // 欄をまたいでも、ある札の音がほかの札の名前・呼び名と同じになっていない
+  const all = CARDS.things.flatMap((t, i) => ['name', 'sound', 'alias'].map((f) => [t[f], i]));
+  const by = new Map();
+  for (const [v, i] of all) { if (by.has(v) && by.get(v) !== i) assert.fail(`「${v}」が 2 つの札にある`); by.set(v, i); }
 });
 
-test('札に禁止語が無い（ng-words.json と突き合わせ）', () => {
-  const all = [...CARDS.themes.flatMap((t) => [t.title, ...t.groups.flat()]), ...CARDS.odd, ...CARDS.lines];
-  for (const t of all) for (const w of NG_WORDS) assert.ok(!t.includes(w), `「${t}」に「${w}」`);
+test('「もの」の札と見本に禁止語が無い（ng-words.json）', () => {
+  const texts = [...CARDS.things, ...CARDS.samples].flatMap((t) => [t.name, t.sound, t.alias]);
+  for (const t of texts) for (const w of NG_WORDS) assert.ok(!t.includes(w), `「${t}」に「${w}」`);
 });
 
-test('同じ名前なら同じ結果（前後の空白と NFC はそろえる）。もう一回は別の結果。5 つ目が違うやつ', () => {
+test('4 か所（文字・絵・音・呼び名）のうち、文字と合うのはちょうど 1 か所。残りの 2 か所は別々の「もの」（全組み合わせ）', () => {
+  const n = CARDS.things.length;
+  let checked = 0;
+  for (let i = 0; i < 3000; i++) {
+    const c = C.make(CARDS, '名前' + i, i % 4);
+    const base = c.ids.name;
+    const same = C.SLOTS.filter((s) => c.ids[s] === base);
+    assert.equal(same.length, 1, JSON.stringify(c.ids));
+    assert.equal(same[0], c.match);
+    const rest = C.SLOTS.filter((s) => s !== c.match).map((s) => c.ids[s]);
+    assert.equal(new Set([base, ...rest]).size, 3, '3 つの別の「もの」');
+    assert.ok(rest.every((x) => x >= 0 && x < n));
+    // 表示された文字どおりにも合うのは 1 か所だけ（札の欄が重ならないので）
+    const t = CARDS.things[base];
+    assert.equal(C.SLOTS.filter((s) => c[s] === t[s]).length, 1);
+    checked++;
+  }
+  // 合う場所は 3 か所とも出る
+  const where = new Set(Array.from({ length: 300 }, (_, i) => C.make(CARDS, 'x' + i, 0).match));
+  assert.deepEqual([...where].sort(), ['alias', 'emoji', 'sound']);
+  assert.ok(checked === 3000);
+});
+
+test('見本のカードも決まりどおり（合うのはちょうど 1 か所、match がその場所）', () => {
+  assert.ok(CARDS.samples.length >= 2);
+  const byName = new Map(CARDS.things.map((t) => [t.name, t]));
+  // 1 枚目はオーナーの例（電子レンジ・チーン・掃除機）。電子レンジは札に無いので、合う場所は match のとおり音とする
+  assert.deepEqual([CARDS.samples[0].name, CARDS.samples[0].sound, CARDS.samples[0].alias, CARDS.samples[0].match], ['電子レンジ', 'チーン', '掃除機', 'sound']);
+  for (const s of CARDS.samples.slice(1)) {
+    const t = byName.get(s.name);
+    assert.ok(t, s.name);
+    assert.deepEqual(C.SLOTS.filter((k) => s[k] === t[k]), [s.match], s.name);
+  }
+  assert.match(C.answerOf({ name: '猫', sound: 'ニャーン', match: 'sound' }), /^音が合っています（猫の音は「ニャーン」）$/);
+});
+
+test('同じ名前で同じカード（前後の空白と NFC はそろえる）。もう一枚は別のカード', () => {
   const a = C.make(CARDS, 'たろう', 0);
   assert.deepEqual(C.make(CARDS, ' たろう ', 0), a);
   assert.deepEqual(C.make(CARDS, 'が', 0), C.make(CARDS, 'が', 0), 'NFC');
-  assert.equal(a.items.length, 5);
-  assert.equal(a.items[4], a.odd);
-  assert.ok(CARDS.odd.includes(a.odd));
-  const titles = new Set([0, 1, 2, 3, 4].map((r) => JSON.stringify(C.make(CARDS, 'たろう', r))));
-  assert.ok(titles.size >= 4, 'もう一回で変わる');
+  const rounds = new Set([0, 1, 2, 3, 4].map((r) => JSON.stringify(C.make(CARDS, 'たろう', r).ids)));
+  assert.ok(rounds.size >= 4);
   assert.equal(C.make(CARDS, '   ', 0).ok, false);
-  // 札が偏りなく選ばれる（名前 2000 個で、題の 9 割以上が 1 回は出る）
+  // 「もの」が偏りなく出る（名前 2,000 個で 45 以上）
   const seen = new Set();
-  for (let i = 0; i < 2000; i++) seen.add(C.make(CARDS, '名前' + i, 0).title);
+  for (let i = 0; i < 2000; i++) seen.add(C.make(CARDS, '名前' + i, 0).name);
   assert.ok(seen.size >= 45, String(seen.size));
 });
 
@@ -61,16 +88,21 @@ test('名前を送る・保存するコードが無い（fetch は札のファ�
   assert.doesNotMatch(intent, /name/);
 });
 
-test('共有の画像に名前は既定で入らない（選んだときだけ）', () => {
-  const res = C.make(CARDS, 'たろう', 0);
-  assert.doesNotMatch(JSON.stringify(C.shareLines(res, 'たろう', false)), /たろう/);
-  assert.match(C.shareLines(res, 'たろう', true).head, /^たろう の/);
+test('共有の画像に名前は既定で入らない（選んだときだけ）。答えは書かない', () => {
+  const c = C.make(CARDS, 'たろう', 0);
+  const off = C.shareLines(c, 'たろう', false);
+  assert.doesNotMatch(JSON.stringify(off), /たろう/);
+  assert.match(C.shareLines(c, 'たろう', true).head, /^たろう の/);
+  assert.doesNotMatch(JSON.stringify(off), /合っています/, '答えは出さない');
+  assert.equal(off.line, 'どこが合っているでしょう');
   assert.match(read('chigau/app.js'), /shareLines\(last, \$\('name'\)\.value, \$\('share-name'\)\.checked\)/);
   assert.match(read('chigau/index.html'), /<input type="checkbox" id="share-name">/, '既定はチェックなし');
 });
 
-test('ページ: 「※演出です」・広告なし・noindex でない・英語版なし・sitemap にある・5000兆円欲しい館の一覧にある・まじめな道具への道', () => {
+test('ページ: 1 行の説明・入力の前に見本のカード・「※演出です」・広告なし・noindex でない・英語版なし・sitemap・館の一覧・まじめな道具への道', () => {
   const html = read('chigau/index.html');
+  assert.match(html, /<p class="subtitle">名前を入れると、文字・絵・音・呼び名がぜんぶ食い違ったカードができます。1 か所だけ合っています。<\/p>/);
+  assert.ok(html.indexOf('id="s-emoji"') > 0 && html.indexOf('id="s-emoji"') < html.indexOf('<form id="form"'), '見本は入力の前');
   assert.ok(html.includes('※演出です'));
   assert.doesNotMatch(html, /adsbygoogle|googlesyndication|noindex|hreflang/);
   assert.match(html, /まじめな道具はこちら/);

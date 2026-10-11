@@ -181,17 +181,19 @@ details.opt > summary { cursor: pointer; color: var(--accent); font-weight: 600;
 .hade-finale-head.wordart, .chigau-title.wordart { color: #ffe600; }
 
 /* 全然違うやつメーカー（K183） */
+.mujun-h { font-size: 1.05rem; margin: 0 0 0.4rem; }
+.mujun { border: 3px double var(--accent); border-radius: 12px; padding: 0.8rem; margin: 0 auto 0.6rem; max-width: 22rem; background: var(--card); }
+.mujun-emoji { font-size: 5rem; line-height: 1.1; margin: 0; }
+.mujun-name { font-size: clamp(1.7rem, 8vw, 2.4rem); font-weight: 900; margin: 0.2rem 0; }
+.mujun-sound, .mujun-alias { font-size: 1.2rem; font-weight: 700; margin: 0.2rem 0; }
+.mujun-k { font-size: 0.85rem; font-weight: 400; color: var(--muted); }
+.mujun-answer { font-weight: 700; margin: 0.4rem 0 0; }
 .chigau-input { font: inherit; font-size: 1.1rem; padding: 0.45rem 0.6rem; border: 1px solid var(--input-border); border-radius: 6px; background: var(--card); color: var(--text); min-height: 44px; width: 100%; max-width: 20rem; box-sizing: border-box; }
 .chigau-result { text-align: center; }
 .chigau-title { font-weight: 700; color: var(--muted); margin: 0 0 0.4rem; }
-.chigau-items { list-style: none; padding: 0; margin: 0 0 0.6rem; }
-.chigau-items li { font-size: clamp(1.5rem, 7vw, 2.2rem); font-weight: 800; line-height: 1.5; animation: chigau-in 0.3s ease-out; }
-.chigau-items li.chigau-odd { color: var(--accent); }
-@keyframes chigau-in { from { opacity: 0; transform: translateY(0.4em); } }
 .chigau-line { font-size: 1.15rem; font-weight: 700; min-height: 1.6em; margin: 0 0 0.8rem; }
 
 @media (prefers-reduced-motion: reduce) {
   .hade-spot, .hade-gougai, .hade-stage.is-shake .hade-layer { animation: none; }
   .hade-confetti { display: none; }
-  .chigau-items li { animation: none; }
 }
