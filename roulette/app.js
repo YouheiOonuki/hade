@@ -68,10 +68,9 @@
     var btns = doc.createElement('div'); btns.className = 'hade-finale-btns'; box.appendChild(btns);
     var again = doc.createElement('button'); again.type = 'button'; again.className = 'hade-btn'; again.textContent = 'もう一回'; btns.appendChild(again);
     var share = doc.createElement('button'); share.type = 'button'; share.className = 'hade-btn hade-btn-sub'; share.textContent = '共有する'; btns.appendChild(share);
-    var serious = doc.createElement('a'); serious.className = 'hade-btn hade-btn-sub'; serious.href = '/web-roulette/'; serious.textContent = 'まじめな版はこちら'; btns.appendChild(serious);
     var pick = doc.createElement('label'); pick.className = 'hade-share-pick';
     var cb = doc.createElement('input'); cb.type = 'checkbox'; cb.id = 'share-names';
-    pick.appendChild(cb); pick.appendChild(doc.createTextNode(' 共有の画像に当たりの名前を入れる（ふだんは伏せます）'));
+    pick.appendChild(cb); pick.appendChild(doc.createTextNode(' 名前も画像に'));
     box.appendChild(pick);
     var note = add('p', 'hade-share-note', '');
     layer.appendChild(box);

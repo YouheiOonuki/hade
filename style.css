@@ -116,7 +116,6 @@ details.opt > summary { cursor: pointer; color: var(--accent); font-weight: 600;
 
 /* --- ド派手版の固有 --- */
 .app-main { max-width: 760px; }
-.hade-notice-top { font-size: 0.9rem; color: var(--muted); margin: 0.6rem 0 1rem; }
 .hade-list { list-style: none; padding: 0; }
 .hade-btn { display: inline-block; font: inherit; font-size: 1.05rem; font-weight: 700; padding: 0.7rem 1.4rem; margin: 0.3rem 0.4rem 0.3rem 0; border-radius: 999px; border: 2px solid var(--accent); background: var(--accent); color: #fff; cursor: pointer; text-decoration: none; min-height: 44px; }
 .hade-btn-sub { background: transparent; color: var(--accent); }
@@ -156,8 +155,7 @@ details.opt > summary { cursor: pointer; color: var(--accent); font-weight: 600;
 .hade-finale-num { font-size: clamp(2.6rem, 13vw, 5rem); font-weight: 900; margin: 0.2rem 0; font-variant-numeric: tabular-nums; }
 .hade-finale-tsukkomi { font-size: 1.2rem; margin: 0 0 0.8rem; }
 .hade-finale-site { opacity: 0.85; margin: 0 0 0.8rem; }
-.hade-finale-src { font-size: 0.85rem; opacity: 0.85; }
-.hade-finale-src a, .hade-share-note a { color: #ffd43d; }
+.hade-share-note a { color: #ffd43d; }
 .hade-finale .hade-btn-sub { color: #fff; border-color: #fff; }
 
 .hade-roll { font-size: clamp(1.6rem, 7vw, 2.8rem); font-weight: 800; min-height: 1.4em; margin: 0.4rem 0; overflow-wrap: anywhere; }
@@ -178,20 +176,12 @@ details.opt > summary { cursor: pointer; color: var(--accent); font-weight: 600;
   transform: rotate(-3deg) skewX(-10deg); -webkit-text-stroke: 1px #c2185b; paint-order: stroke fill; border-radius: 0.15em;
   text-shadow: 1px 1px 0 #ff1744, 2px 2px 0 #ff9100, 3px 3px 0 #00c853, 4px 4px 0 #2979ff; }
 .app-header h1.wordart { color: #ffe600; font-size: 1.8rem; margin: 0.4rem 0 0.6rem; }
-.hade-finale-head.wordart, .chigau-title.wordart { color: #ffe600; }
+.hade-finale-head.wordart { color: #ffe600; }
 
-/* 全然違うやつメーカー（K183） */
-.mujun-h { font-size: 1.05rem; margin: 0 0 0.4rem; }
-.mujun { border: 3px double var(--accent); border-radius: 12px; padding: 0.8rem; margin: 0 auto 0.6rem; max-width: 22rem; background: var(--card); }
-.mujun-emoji { font-size: 5rem; line-height: 1.1; margin: 0; }
-.mujun-name { font-size: clamp(1.7rem, 8vw, 2.4rem); font-weight: 900; margin: 0.2rem 0; }
-.mujun-sound, .mujun-alias { font-size: 1.2rem; font-weight: 700; margin: 0.2rem 0; }
-.mujun-k { font-size: 0.85rem; font-weight: 400; color: var(--muted); }
-.mujun-answer { font-weight: 700; margin: 0.4rem 0 0; }
-.chigau-input { font: inherit; font-size: 1.1rem; padding: 0.45rem 0.6rem; border: 1px solid var(--input-border); border-radius: 6px; background: var(--card); color: var(--text); min-height: 44px; width: 100%; max-width: 20rem; box-sizing: border-box; }
-.chigau-result { text-align: center; }
-.chigau-title { font-weight: 700; color: var(--muted); margin: 0 0 0.4rem; }
-.chigau-line { font-size: 1.15rem; font-weight: 700; min-height: 1.6em; margin: 0 0 0.8rem; }
+/* 館の札と入口（D324: 説明の文は無し） */
+.hade-tag { display: inline-block; font-size: 0.75rem; color: var(--muted); border: 1px solid var(--border); border-radius: 999px; padding: 0 0.6em; margin: 0.4rem 0; }
+.hade-door { display: block; text-align: center; font-size: clamp(1.8rem, 9vw, 3rem); font-weight: 900; padding: 1.2rem; border-radius: 16px; background: #1b1464; color: #ffe600; text-decoration: none; transform: rotate(-2deg); }
+.hade-skip { font-size: 1.4rem; line-height: 1; min-width: 44px; padding: 0.3rem 0.6rem; }
 
 @media (prefers-reduced-motion: reduce) {
   .hade-spot, .hade-gougai, .hade-stage.is-shake .hade-layer { animation: none; }

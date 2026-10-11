@@ -1,8 +1,7 @@
 {
   "id": "roulette",
   "title": "ルーレット（5000兆円欲しい館）",
-  "noticeTail": "（当たりの決め方はまじめなルーレットと同じ）",
-  "note": "台本だけ。当たりは /web-roulette/pick.js の pickMultiple が決める。{winner} は当たりの名前（複数なら「、」でつなぐ）、{count} は当たりの数。決めの一言 line は 20 字以内・桁違いの数字か断言・敬体（企画書 89 の 2 章）。回すたびに 3 本から 1 本",
+   "note": "台本だけ。当たりは /web-roulette/pick.js の pickMultiple が決める。{winner} は当たりの名前（複数なら「、」でつなぐ）、{count} は当たりの数。決めの一言 line は 20 字以内・桁違いの数字か断言・敬体（企画書 89 の 2 章）。回すたびに 3 本から 1 本",
   "variants": {
     "gougai": {
       "scenes": [
