@@ -61,7 +61,7 @@
     var box = doc.createElement('div');
     box.className = 'hade-finale';
     var add = function (tag, cls, text) { var e = doc.createElement(tag); e.className = cls; e.textContent = text; box.appendChild(e); return e; };
-    add('p', 'hade-finale-head', f.head || '');
+    add('p', 'hade-finale-head wordart', f.head || '');
     add('p', 'hade-finale-win', res.winners.join('、'));
     add('p', 'hade-finale-line', f.line || '');
     add('p', 'hade-finale-site', 'yorozu-craft.com / 5000兆円欲しい館');
@@ -101,7 +101,7 @@
     var g = c.getContext('2d');
     g.fillStyle = '#5b2a86'; g.fillRect(0, 0, 1080, 1350);
     g.textAlign = 'center';
-    g.fillStyle = '#ffd43d'; g.font = 'bold 130px sans-serif'; g.fillText(t.head, 540, 360);
+    root.Wordart.draw(g, t.head, 540, 340, 130);
     g.fillStyle = '#fff'; g.font = 'bold 84px sans-serif'; g.fillText(t.win.length > 14 ? t.win.slice(0, 13) + '…' : t.win, 540, 620);
     g.font = 'bold 60px sans-serif'; g.fillText(t.line, 540, 820);
     g.font = '40px sans-serif'; g.fillStyle = '#eadcf5';

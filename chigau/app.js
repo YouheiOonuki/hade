@@ -79,8 +79,8 @@
     var c = doc.createElement('canvas'); c.width = 1080; c.height = 1350;
     var g = c.getContext('2d');
     g.fillStyle = '#5b2a86'; g.fillRect(0, 0, 1080, 1350);
-    g.textAlign = 'center'; g.fillStyle = '#ffd43d'; g.font = 'bold 64px sans-serif';
-    g.fillText(t.head.length > 16 ? t.head.slice(0, 15) + '…' : t.head, 540, 220);
+    root.Wordart.draw(g, t.head.length > 16 ? t.head.slice(0, 15) + '…' : t.head, 540, 210, 64);
+    g.textAlign = 'center';
     t.items.forEach(function (w, i) {
       g.fillStyle = i === t.items.length - 1 ? '#ffd43d' : '#fff';
       g.font = 'bold 84px sans-serif';

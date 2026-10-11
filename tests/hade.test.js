@@ -121,3 +121,20 @@ test('点滅と音: CSS の点滅は 340ms 以上、視差効果を減らす設�
   assert.match(read('engine.js'), /var audio = \{ on: false, ctx: null \};/);
   assert.match(read('engine.js'), /var skip = el\('button', 'hade-skip', '飛ばす ▶▶'\);/);
 });
+
+test('D321 ワードアート: 館の見出し・決めの画面・共有の画像の 3 か所だけ。帯と文字の明るさの比 4.5:1 以上。点滅しない。まじめな版には無い', () => {
+  const W = require('../wordart.js');
+  const lum = (hex) => { const c = [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16) / 255).map((v) => (v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4)); return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2]; };
+  const ratio = (a, b) => { const [x, y] = [lum(a), lum(b)].sort((p, q) => q - p); return (x + 0.05) / (y + 0.05); };
+  assert.ok(ratio(W.FILL, W.BAND) >= 4.5, String(ratio(W.FILL, W.BAND)));
+  const css = read('style.css');
+  const rule = css.match(/\.wordart \{[^}]*\}/)[0];
+  assert.match(rule, /background: #1b1464; color: #ffe600/);
+  assert.doesNotMatch(rule, /animation/);
+  for (const f of ['index.html', 'roulette/index.html', 'chigau/index.html']) assert.match(read(f), /<h1 class="wordart">/, f + ': 見出し');
+  assert.match(read('roulette/app.js'), /'hade-finale-head wordart'/, '決めの画面');
+  assert.match(read('chigau/index.html'), /class="chigau-title wordart"/, '決めの画面');
+  for (const f of ['roulette/app.js', 'chigau/app.js']) assert.match(read(f), /root\.Wordart\.draw\(g, /, f + ': 共有の画像');
+  const serious = path.join(ROOT, '..', 'web-roulette', 'index.html');
+  if (fs.existsSync(serious)) assert.doesNotMatch(fs.readFileSync(serious, 'utf8'), /wordart/i, 'まじめな版には入れない');
+});
