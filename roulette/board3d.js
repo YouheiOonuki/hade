@@ -6,12 +6,12 @@
 // 点滅しない（照明は 1 回落とすだけ）。紙吹雪は 300 枚まで。描画の解像度は devicePixelRatio を 2 までに丸める
 // ===========================
 import * as THREE from '../vendor/three/three.module.min.js';
+import { COLORS } from '../wheel.js';   // 盤の色は 2D の盤と同じ 1 か所
 
 export const CONFETTI_MAX = 300;
 export const SPIN_MS = 5200;      // 回す時間（加速と減速）
 export const DIM_AT = 0.82;       // 照明を落とす時点（回す時間の割合）
 export const FALL_MS = 2600;      // 紙吹雪の時間
-const COLORS = ['#ffe600', '#ff1744', '#2979ff', '#00c853', '#ff9100', '#d500f9', '#ffffff', '#00e5ff'];
 
 /**
  * n 個の扇形のうち index 番目が上（針の位置）に来る盤の角度（ラジアン）。turns 回まわってから止まる。

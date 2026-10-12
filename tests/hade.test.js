@@ -194,3 +194,19 @@ test('K180 第 2 版: 盤は抽選の当たりの扇形で止まる（角度の�
     assert.ok(a > 6 * Math.PI * 2, '十分に回ってから止まる');
   }
 });
+
+test('段 2 の 7（ROADMAP 7.60）: 盤を最初から見せる（入力は盤の下）。入口にも盤。2D の盤は wheel.js、色は 3D と同じ 1 か所。盤から当たりを決めない', async () => {
+  const page = read('roulette/index.html');
+  assert.ok(page.indexOf('data-hade-wheel="items"') > 0 && page.indexOf('data-hade-wheel="items"') < page.indexOf('id="items"'), '盤は候補の欄より上');
+  assert.ok(page.indexOf('id="go"') < page.indexOf('id="items"'), '回すは盤のすぐ下、入力はその下');
+  assert.match(page, /<script type="module" src="\.\.\/wheel\.js"><\/script>/);
+  assert.match(read('index.html'), /class="hade-door"[^>]*><span class="hade-wheel" data-hade-wheel aria-hidden="true">/, '入口の盤');
+  assert.match(strip(read('roulette/board3d.js')), /import \{ COLORS \} from '\.\.\/wheel\.js'/, '3D の盤も同じ色');
+  assert.doesNotMatch(strip(read('roulette/board3d.js')), /const COLORS =/, '色を写さない');
+  const w = strip(read('wheel.js'));
+  assert.doesNotMatch(w, /pickMultiple|Math\.random|innerHTML/, '当たりを決めない・入れた字を HTML にしない');
+  const { sectorPath, COLORS } = await import('../wheel.js');
+  assert.equal(COLORS.length, 8);
+  assert.equal(sectorPath(0, 4, 100), 'M0 0L0.00 -100.00A100 100 0 0 1 100.00 0.00Z', '扇形 0 は上から時計回り');
+  assert.match(read('style.css'), /prefers-reduced-motion: reduce\) \{ \.hade-wheel-spin \{ animation: none; \} \}/);
+});

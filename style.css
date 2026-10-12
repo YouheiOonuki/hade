@@ -191,3 +191,16 @@ details.opt > summary { cursor: pointer; color: var(--accent); font-weight: 600;
   .hade-spot, .hade-gougai, .hade-stage.is-shake .hade-layer { animation: none; }
   .hade-confetti { display: none; }
 }
+
+/* 2D の盤（../wheel.js の SVG。D325 の 3D の盤と同じ色）。入口とルーレットの最初の画面。飾り（aria-hidden） */
+.hade-wheel { display: block; width: min(58vw, 250px); aspect-ratio: 224 / 230; margin: 0.4rem auto 0; filter: drop-shadow(0 6px 10px var(--shadow)); }
+.hade-wheel-svg { display: block; width: 100%; height: 100%; }
+.hade-wheel-spin { animation: hade-wheel-idle 40s linear infinite; transform-origin: 0 0; }
+@keyframes hade-wheel-idle { to { transform: rotate(360deg); } }
+.hade-wheel-label { fill: #1b1464; font-weight: 900; dominant-baseline: middle; text-anchor: middle; font-family: var(--font-ui); }
+.hade-go-row { text-align: center; margin: 0.2rem 0 0.4rem; }
+.hade-go-row .hade-go { margin: 0.4rem 0 0; min-width: 12rem; font-size: 1.35rem; }
+#msg { text-align: center; }
+.hade-door .hade-wheel { width: min(60vw, 240px); margin: 0 auto 0.6rem; filter: none; }
+.hade-door-name { display: block; }
+@media (prefers-reduced-motion: reduce) { .hade-wheel-spin { animation: none; } }
