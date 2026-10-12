@@ -29,7 +29,12 @@
 
     <p id="lib-error" class="card" hidden>読み込めませんでした。</p>
 
-    <form id="form" class="card" autocomplete="off">
+    <!-- 盤を最初から見せ、入力は盤の下（ROADMAP 7.60 段 2 の 7）。盤は候補の欄に合わせて ../wheel.js が描く飾り。3D の盤は「回す」を押してから -->
+    <form id="form" autocomplete="off">
+      <div class="hade-wheel" data-hade-wheel="items" aria-hidden="true"></div>
+      <p class="hade-go-row"><button type="submit" id="go" class="hade-btn hade-go" disabled>回す</button></p>
+      <p id="msg" class="hint" aria-live="polite"></p>
+      <div class="card">
       <div class="field">
         <label for="items">候補</label>
         <textarea id="items" class="hade-textarea" rows="6">カレー
@@ -42,8 +47,7 @@
         <label for="count">当たりの数</label>
         <select id="count"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select>
       </div>
-      <button type="submit" id="go" class="hade-btn hade-go" disabled>回す</button>
-      <p id="msg" class="hint" aria-live="polite"></p>
+      </div>
     </form>
 
     <section id="stage" class="hade-stage" hidden aria-live="polite"></section>
@@ -68,6 +72,7 @@
   <script src="../engine.js"></script>
   <script src="../wordart.js"></script>
   <script src="./app.js"></script>
+  <script type="module" src="../wheel.js"></script>
   <!-- Cloudflare Web Analytics（Cookie を使わないアクセス解析） --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "b79bf821e1fd4b6683866d493b1de426"}'></script><!-- End Cloudflare Web Analytics -->
 </body>
 </html>

@@ -25,7 +25,8 @@
   </header>
   <main class="app-main">
     <ul class="hade-list">
-      <li><a class="hade-door" href="./roulette/">ルーレット</a></li>
+      <!-- 入口の盤（2 本目が来るまでルーレットの盤を入口にも。ROADMAP 7.60 段 2 の 7）。飾り -->
+      <li><a class="hade-door" href="./roulette/"><span class="hade-wheel" data-hade-wheel aria-hidden="true"></span><span class="hade-door-name">ルーレット</span></a></li>
     </ul>
   </main>
   <footer class="app-footer">
@@ -38,6 +39,7 @@
     </nav>
     <p>&copy; 2026 yorozu-craft. All rights reserved.</p>
   </footer>
+  <script type="module" src="./wheel.js"></script>
   <!-- Cloudflare Web Analytics（Cookie を使わないアクセス解析） --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "b79bf821e1fd4b6683866d493b1de426"}'></script><!-- End Cloudflare Web Analytics -->
 </body>
 </html>
