@@ -211,7 +211,7 @@ test('段 2 の 7（ROADMAP 7.60）: 盤を最初から見せる（入力は盤�
   assert.match(read('style.css'), /prefers-reduced-motion: reduce\) \{ \.hade-wheel-spin \{ animation: none; \} \}/);
 });
 
-test('暗い表示の塗りのボタンは暗い字（--accent #e0a066 に白は 2.5:1。4.5:1 以上にする）。盤の名前は 12 個まで', () => {
+test('暗い表示の塗りのボタンは暗い字（--accent #e0a066 に白は 2.2:1。4.5:1 以上にする）。盤の名前は 12 個まで', () => {
   const css = read('style.css');
   assert.match(css, /@media \(prefers-color-scheme: dark\) \{ \.hade-btn:not\(\.hade-btn-sub\) \{ color: #1c1814; \} \}/);
   const L = (h) => { const c = [1, 3, 5].map((i) => parseInt(h.substr(i, 2), 16) / 255).map((v) => (v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4)); return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2]; };

@@ -119,7 +119,7 @@ details.opt > summary { cursor: pointer; color: var(--accent); font-weight: 600;
 .hade-list { list-style: none; padding: 0; }
 .hade-btn { display: inline-block; font: inherit; font-size: 1.05rem; font-weight: 700; padding: 0.7rem 1.4rem; margin: 0.3rem 0.4rem 0.3rem 0; border-radius: 999px; border: 2px solid var(--accent); background: var(--accent); color: #fff; cursor: pointer; text-decoration: none; min-height: 44px; }
 .hade-btn-sub { background: transparent; color: var(--accent); }
-/* 暗い表示では --accent が明るい（#e0a066）ので、塗りのボタンの字は暗くする（白では 2.5:1。暗い字で 4.5:1 以上。検収 2026-10-13） */
+/* 暗い表示では --accent が明るい（#e0a066）ので、塗りのボタンの字は暗くする（白では 2.2:1。暗い字で 4.5:1 以上。検収 2026-10-13） */
 @media (prefers-color-scheme: dark) { .hade-btn:not(.hade-btn-sub) { color: #1c1814; } }
 .hade-go { margin-top: 0.8rem; font-size: 1.2rem; }
 .hade-go:disabled { opacity: 0.5; }
