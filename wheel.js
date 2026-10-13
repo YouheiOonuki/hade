@@ -6,7 +6,7 @@
 // ===========================
 export const COLORS = ['#ffe600', '#ff1744', '#2979ff', '#00c853', '#ff9100', '#d500f9', '#ffffff', '#00e5ff'];
 const BLANK = 8;          // 名前の無い盤（入口）の扇形の数
-const LABEL_MAX = 16;     // これより多いと名前を書かない（字が潰れる）
+const LABEL_MAX = 12;     // これより多いと名前を書かない（13 以上は中心の近くで字が詰まる。検収 2026-10-13）
 
 /** 扇形 i の道（上から時計回り）。半径 r */
 export function sectorPath(i, n, r) {
