@@ -206,3 +206,11 @@ details.opt > summary { cursor: pointer; color: var(--accent); font-weight: 600;
 .hade-door .hade-wheel { width: min(60vw, 240px); margin: 0 auto 0.6rem; filter: none; }
 .hade-door-name { display: block; }
 @media (prefers-reduced-motion: reduce) { .hade-wheel-spin { animation: none; } }
+
+/* ビンゴの発表（K182）: 部屋のコードの欄・最後の番号・出た番号の帯（新しい順） */
+.hade-code { font-size: 1.6rem; letter-spacing: 0.2em; text-transform: uppercase; text-align: center; }
+output#msg, output#conn { display: block; text-align: center; }
+.hade-bingo-last { display: block; font-size: clamp(3rem, 18vw, 8rem); font-weight: 900; text-align: center; line-height: 1.1; }
+.hade-bingo-num { font-size: clamp(4rem, 26vw, 12rem); line-height: 1.05; }
+.hade-bingo-band { display: flex; flex-wrap: wrap; gap: 0.4rem; justify-content: center; list-style: none; padding: 0; margin: 0.6rem 0 0; }
+.hade-bingo-band li { padding: 0.15rem 0.6rem; border: 2px solid currentColor; border-radius: 999px; font-weight: 700; font-variant-numeric: tabular-nums; }

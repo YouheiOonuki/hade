@@ -219,3 +219,46 @@ test('暗い表示の塗りのボタンは暗い字（--accent #e0a066 に白は
   assert.ok(ratio('#1c1814', '#e0a066') >= 4.5);
   assert.match(read('wheel.js'), /const LABEL_MAX = 12;/);
 });
+
+// ---- K182 ビンゴの発表（ROADMAP 7.69.3、ACCEPTANCE「K182」、D339） ----
+const BINGO = JSON.parse(read('scripts/bingo.json'));
+const B = require('../bingo/app.js');
+test('K182 台本: 型・ため 3 秒まで・一言 20 字以内・最後は決め・禁止語なし。視差効果を減らす設定なら決めだけ', () => {
+  assert.deepEqual(H.validate(BINGO).errors, []);
+  for (const t of scriptTexts(BINGO)) for (const w of NG_WORDS) assert.ok(!t.includes(w), `「${t}」に「${w}」`);
+  for (const v of Object.keys(BINGO.variants)) assert.deepEqual(H.plan(BINGO, v, { reduced: true }).map((s) => s.type), ['finale']);
+});
+test('K182: 増えた番号だけを発表する（最初の状態・減ったときは発表しない）。番号の文字は B〜O の列', () => {
+  assert.deepEqual(B.newNumbers(-1, [5, 9]), []);
+  assert.deepEqual(B.newNumbers(2, [5, 9, 40]), [40]);
+  assert.deepEqual(B.newNumbers(3, [5, 9, 40, 61, 75]), [61, 75]);
+  assert.deepEqual(B.newNumbers(5, [7]), []);
+  // 本物は /bingo/calc.js の letterOf（ページが同じ URL で読む）。ここでは同じ割り当て（範囲を 5 列に分ける）の代わりを渡し、このリポジトリだけで通るようにする
+  const Calc = { letterOf: (n, min, max) => 'BINGO'[Math.floor((n - 1) / (max / 5))] || '' };
+  assert.equal(B.label(Calc, 12, 75), 'B 12');
+  assert.equal(B.label(Calc, 75, 75), 'O 75');
+  assert.equal(B.label(null, 12, 75), '12');
+});
+test('K182 ページ: 部屋を見るだけ（送らない・引かない・新しい DO なし・コードを URL に入れない）。音は押してから', () => {
+  const js = strip(read('bingo/app.js'));
+  assert.doesNotMatch(js, /\.send\(|create\(|close\(/, '部屋に書き込む呼び出しがある');
+  assert.doesNotMatch(js, /location\.search|URLSearchParams|history\.(push|replace)State|room=/, '部屋のコードを URL に入れている');
+  assert.match(read('bingo/index.html'), /<script src="\/bingo\/room\.js"><\/script>/);
+  assert.match(read('bingo/index.html'), /<script src="\/bingo\/calc\.js"><\/script>/);
+  // 音を出すのは「音を出す」の押下の中だけ
+  const on = js.match(/H\.audio\.on = [^;]+;/g) || [];
+  assert.equal(on.length, 1);
+  assert.match(js, /\$\('sound'\)\.addEventListener\('click', function \(\) \{\s*H\.audio\.on = !H\.audio\.on;/);
+  assert.match(read('bingo/index.html'), /id="sound"[^>]*aria-pressed="false"/);
+});
+test('K182 ページ: noindex・sitemap に無い・広告の script なし・英語版なし・説明の文なし・まじめな版 1 つ', () => {
+  const html = read('bingo/index.html');
+  assert.match(html, /<meta name="robots" content="noindex">/);
+  assert.ok(!read('sitemap.xml').includes('/hade/bingo/'));
+  assert.ok(!html.includes('adsbygoogle'));
+  assert.ok(!fs.existsSync(path.join(ROOT, 'bingo', 'en')));
+  const shown = shownHtml('bingo/index.html') + JSON.stringify(BINGO);
+  for (const w of ['使い方', '演出が苦手', '※演出です']) assert.ok(!shown.includes(w), w);
+  assert.equal((shownHtml('bingo/index.html').match(/まじめな版/g) || []).length, 1);
+  assert.ok(!read('index.html').includes('/hade/bingo/'), '館の入口に載せない（D310）');
+});
