@@ -214,3 +214,5 @@ output#msg, output#conn { display: block; text-align: center; }
 .hade-bingo-num { font-size: clamp(4rem, 26vw, 12rem); line-height: 1.05; }
 .hade-bingo-band { display: flex; flex-wrap: wrap; gap: 0.4rem; justify-content: center; list-style: none; padding: 0; margin: 0.6rem 0 0; }
 .hade-bingo-band li { padding: 0.15rem 0.6rem; border: 2px solid currentColor; border-radius: 999px; font-weight: 700; font-variant-numeric: tabular-nums; }
+/* 入口の 2 本目（K182）の番号の玉。飾り */
+.hade-ball { display: grid; place-items: center; width: min(40vw, 160px); aspect-ratio: 1; margin: 0 auto 0.6rem; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #fff 0 18%, #ffd43d 19% 100%); color: #1c1814; font-size: clamp(1.8rem, 9vw, 2.6rem); font-weight: 900; box-shadow: 0 6px 18px rgba(0,0,0,0.25); }

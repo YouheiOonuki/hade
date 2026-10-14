@@ -260,5 +260,7 @@ test('K182 ページ: noindex・sitemap に無い・広告の script なし・�
   const shown = shownHtml('bingo/index.html') + JSON.stringify(BINGO);
   for (const w of ['使い方', '演出が苦手', '※演出です']) assert.ok(!shown.includes(w), w);
   assert.equal((shownHtml('bingo/index.html').match(/まじめな版/g) || []).length, 1);
-  assert.ok(!read('index.html').includes('/hade/bingo/'), '館の入口に載せない（D310）');
+  // D347: 館の入口に 2 本目として並べる（入口は noindex のまま。D310）。入口の主な操作はルーレットのまま
+  assert.match(read('index.html'), /<a class="hade-door" href="\.\/bingo\/">[\s\S]*?ビンゴの発表<\/span><\/a>/);
+  assert.equal((read('index.html').match(/data-primary/g) || []).length, 1);
 });
