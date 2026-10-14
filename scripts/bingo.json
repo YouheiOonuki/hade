@@ -1,0 +1,20 @@
+{
+  "id": "bingo",
+  "title": "ビンゴの発表（5000兆円欲しい館）",
+  "note": "台本だけ。番号は /bingo/ の「みんなで」の部屋（K146）で司会が引いたもの。この画面は部屋を見るだけで、番号を引かない・送らない。{label} は「B 12」のような番号、{count} は何個目か。決めの一言 line は 20 字以内（企画書 89 の 2 章）。新しい番号が来るたびに 2 本から 1 本",
+  "variants": {
+    "gougai": {
+      "scenes": [
+        { "type": "drumroll", "ms": 2500, "title": "次の番号は……", "flashMs": 400 },
+        { "type": "gougai", "ms": 2200, "paper": "号外", "head": "{label}", "sub": "{count} 個目の番号" },
+        { "type": "finale", "head": "{label}", "line": "会場がどよめいています" }
+      ]
+    },
+    "kakutei": {
+      "scenes": [
+        { "type": "drumroll", "ms": 2500, "title": "運命の番号が決まります", "flashMs": 400 },
+        { "type": "finale", "head": "{label}", "line": "歴史に残る番号です" }
+      ]
+    }
+  }
+}

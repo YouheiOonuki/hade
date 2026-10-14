@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ビンゴの発表（5000兆円欲しい館）｜yorozu-craft</title>
+  <meta name="description" content="ビンゴの番号を大画面で大げさに発表する。広告なし。">
+  <!-- 検索に出さない・sitemap とトップに載せない（ROADMAP 7.69.3 K182、D310。AdSense の結果まで） -->
+  <meta name="robots" content="noindex">
+  <meta name="theme-color" content="#5b2a86">
+  <!-- 広告なし（演出のページは本文が少ないので収益の場にしない。D303・D312）。英語版は作らない（笑いは訳せない）。AdSense はサイト所有の確認の meta だけ -->
+  <meta name="google-adsense-account" content="ca-pub-5375267956079717">
+  <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+  <header class="app-header">
+    <h1 class="wordart">ビンゴの発表（5000兆円欲しい館）</h1>
+  </header>
+
+  <main class="app-main">
+
+    <p id="lib-error" class="card" hidden>読み込めませんでした。</p>
+
+    <!-- /bingo/ の「みんなで」の部屋を見るだけ。部屋のコードは入力欄だけ（URL に入れない） -->
+    <form id="room-form" class="card" autocomplete="off">
+      <div class="field">
+        <label for="code">部屋のコード</label>
+        <input type="text" id="code" class="hade-code" inputmode="text" maxlength="8" spellcheck="false" placeholder="1234A">
+      </div>
+      <p class="hade-go-row"><button type="submit" class="hade-btn hade-go">見る</button></p>
+      <output id="msg" class="hint"></output>
+    </form>
+
+    <p class="hade-go-row"><button type="button" id="sound" class="hade-btn hade-btn-sub" aria-pressed="false">🔇 音を出す</button></p>
+
+    <section id="stage" class="hade-stage" hidden aria-live="polite"></section>
+
+    <section id="board" class="card hade-bingo-board" aria-label="出た番号" hidden>
+      <output id="last" class="hade-bingo-last"></output>
+      <ol id="drawn" class="hade-bingo-band"></ol>
+      <output id="conn" class="hint"></output>
+    </section>
+
+  </main>
+
+  <footer class="app-footer">
+    <nav class="footer-nav" aria-label="フッターナビゲーション">
+      <ul>
+        <li><a href="../../">yorozu-craft トップ</a></li>
+        <li><a href="../">5000兆円欲しい館</a></li>
+        <li><a href="/bingo/">まじめな版</a></li>
+        <li><a href="../../about.html">運営者情報</a></li>
+        <li><a href="../../privacy-policy.html">プライバシーポリシー</a></li>
+      </ul>
+    </nav>
+    <p>&copy; 2026 yorozu-craft. All rights reserved.</p>
+  </footer>
+
+  <!-- 部屋の口と番号の文字はまじめな版を同じ URL で読む（写しを持たない。D312） -->
+  <script src="/bingo/calc.js"></script>
+  <script src="/bingo/room.js"></script>
+  <script src="../engine.js"></script>
+  <script src="../wordart.js"></script>
+  <script src="./app.js"></script>
+  <!-- Cloudflare Web Analytics（Cookie を使わないアクセス解析） --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "b79bf821e1fd4b6683866d493b1de426"}'></script><!-- End Cloudflare Web Analytics -->
+</body>
+</html>
