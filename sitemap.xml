@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <!-- あほらし館は検索から来てよいが、優先度は低く。トップ・pages.json には AdSense の結果が出るまで載せない（ROADMAP 7.46.1） -->
-  <url><loc>https://yorozu-craft.com/hade/</loc><lastmod>2026-10-11</lastmod><priority>0.3</priority></url>
-  <url><loc>https://yorozu-craft.com/hade/roulette/</loc><lastmod>2026-10-11</lastmod><priority>0.3</priority></url>
+  <!-- あほらし館は検索から来てよいが、優先度は低く。トップ・pages.json には AdSense の結果が出るまで載せない（ROADMAP 7.46.1）。
+       2026-10-18 から一時的に空（ROADMAP 7.104）: /hade/ と /hade/roulette/ は最初の HTML に文がほとんど無いので noindex にして外した。
+       中身を入れたら（QUEUE Q-025）2 枚を priority 0.3 で戻す（2026-10-17 以前の git の履歴の形） -->
 </urlset>
