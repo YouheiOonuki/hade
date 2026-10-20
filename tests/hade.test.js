@@ -138,8 +138,26 @@ test('D321 ワードアート: 館の見出し・決めの画面・共有の画�
   if (fs.existsSync(serious)) assert.doesNotMatch(fs.readFileSync(serious, 'utf8'), /wordart/i, 'まじめな版には入れない');
 });
 
+// D384（2026-10-20）: 1 画面目の下・脚の上の「この館について」だけは案内の文を置いてよい。D324 の検査はその節を除いた画面の文を見る
+const ABOUT_RE = /<section class="hade-about card"[\s\S]*?<\/section>/;
+
+test('D384: 「この館について」は main の末尾（脚の上）に 1 つ。JS 無しで 100 字以上、まじめな版へのリンク。「読み込めませんでした。」は HTML に無い（JS が失敗したときだけ）', () => {
+  for (const f of PAGES) {
+    const html = read(f).replace(/<!--[\s\S]*?-->/g, '');
+    const m = html.match(ABOUT_RE);
+    assert.ok(m, f + ': この館について');
+    assert.equal((html.match(/class="hade-about card"/g) || []).length, 1, f);
+    assert.ok(html.indexOf('<main') < m.index && m.index + m[0].length < html.indexOf('</main>'), f + ': main の末尾（脚の上）');
+    const text = m[0].replace(/<[^>]+>/g, '').replace(/\s+/g, '');
+    assert.ok(text.length >= 100, f + ': ' + text.length + ' 字');
+    assert.ok(m[0].includes('href="/web-roulette/"'), f + ': まじめな版へ戻る');
+    assert.doesNotMatch(html, /読み込めませんでした/, f);
+  }
+  assert.match(read('roulette/app.js'), /\$\('lib-error'\)\.textContent = '読み込めませんでした。';/);
+});
+
 test('D324（とオーナー 2026-10-11）: 館の説明の文も「※演出です」も無い。「まじめな版」1 つだけ。「飛ばす」は小さな ×', () => {
-  const shownText = (f) => read(f).replace(/<!--[\s\S]*?-->/g, '').replace(/<script[\s\S]*?<\/script>/g, '').replace(/<head>[\s\S]*?<\/head>/, '');
+  const shownText = (f) => read(f).replace(/<!--[\s\S]*?-->/g, '').replace(/<script[\s\S]*?<\/script>/g, '').replace(/<head>[\s\S]*?<\/head>/, '').replace(ABOUT_RE, '');
   for (const f of ['index.html', 'roulette/index.html']) {
     const t = shownText(f);
     assert.doesNotMatch(t, /演出が苦手|使い方|視差効果|大げさに決める|別館です|ための/, f);

@@ -117,6 +117,11 @@ details.opt > summary { cursor: pointer; color: var(--accent); font-weight: 600;
 /* --- ド派手版の固有 --- */
 .app-main { max-width: 760px; }
 .hade-list { list-style: none; padding: 0; }
+/* 1 画面目の下・脚の上の案内（D384） */
+.hade-about { margin: 2.5rem 0 0; font-size: 0.95rem; }
+.hade-about h2 { font-size: 1.05rem; margin: 0 0 0.5rem; }
+.hade-about p { margin: 0 0 0.6rem; }
+.hade-about p:last-child { margin-bottom: 0; }
 .hade-btn { display: inline-block; font: inherit; font-size: 1.05rem; font-weight: 700; padding: 0.7rem 1.4rem; margin: 0.3rem 0.4rem 0.3rem 0; border-radius: 999px; border: 2px solid var(--accent); background: var(--accent); color: #fff; cursor: pointer; text-decoration: none; min-height: 44px; }
 .hade-btn-sub { background: transparent; color: var(--accent); }
 /* 暗い表示では --accent が明るい（#e0a066）ので、塗りのボタンの字は暗くする（白では 2.2:1。暗い字で 4.5:1 以上。検収 2026-10-13） */
