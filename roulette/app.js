@@ -36,6 +36,7 @@
   // まじめな版の lib が読めなければ、まじめな版へのリンクだけを出す
   if (!Pick || !H) {
     $('form').hidden = true;
+    $('lib-error').textContent = '読み込めませんでした。';
     $('lib-error').hidden = false;
     return;
   }

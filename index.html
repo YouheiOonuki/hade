@@ -3,13 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <!-- 一時の noindex（yorozu-plans ROADMAP 7.104）: 最初の HTML に文がほとんど無いので、中身を入れるまで索引と sitemap から外す。中身を入れたら（QUEUE Q-025）この行を消し、sitemap.xml に戻す -->
+  <!-- 一時の noindex（yorozu-plans ROADMAP 7.104）: 最初の HTML に文がほとんど無いので、中身を入れるまで索引と sitemap から外す。中身は入れた（QUEUE Q-025、2026-10-21）。この行を消して sitemap.xml に戻すのは AdSense の審査の結果の後（Q-025a・D383） -->
   <meta name="robots" content="noindex">
   <title>5000兆円欲しい館 —— 中身はまじめ、発表だけ大げさ｜yorozu-craft</title>
-  <meta name="description" content="大げさに発表する別館。広告なし。">
+  <meta name="description" content="ルーレットとビンゴの結果を、ドラムロール・号外・紙吹雪で大げさに発表する別館。当たりの決め方はまじめな版と同じで、ルーレットの候補は送らず保存しない。広告なし。">
   <link rel="canonical" href="https://yorozu-craft.com/hade/">
   <meta property="og:title" content="5000兆円欲しい館｜yorozu-craft">
   <meta property="og:description" content="中身はまじめ、発表だけ大げさ。">
+  <meta property="og:image" content="https://yorozu-craft.com/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://yorozu-craft.com/hade/">
   <meta property="og:site_name" content="yorozu-craft">
@@ -32,6 +35,12 @@
       <!-- 2 本目: ビンゴの発表（K182。D347・D316 の 2 本はこれで埋まる）。番号の玉は飾り -->
       <li><a class="hade-door" href="./bingo/"><span class="hade-ball" aria-hidden="true">B 12</span><span class="hade-door-name">ビンゴの発表</span></a></li>
     </ul>
+    <!-- 1 画面目の下・脚の上の案内（SCREEN 1.4 の 2・D384。JS 無しの HTML に 100 字以上） -->
+    <section class="hade-about card" aria-labelledby="hade-about-h">
+      <h2 id="hade-about-h">この館について</h2>
+      <p>5000兆円欲しい館は、集まりで使う道具の結果を、ドラムロールや号外や紙吹雪で大げさに発表するページです。ルーレットは候補の中から当たりを選んで発表し、ビンゴの発表は、まじめな版のビンゴで出た番号を大きく発表します。当たりの決め方はまじめな版と同じ部品を使います。ルーレットに書いた候補はどこにも送らず、保存もしません。広告はありません。</p>
+      <p>まじめな版へ戻る: <a href="/web-roulette/">ルーレット・くじ引き</a>／<a href="/bingo/">ビンゴ</a>／<a href="../">yorozu-craft トップ</a></p>
+    </section>
   </main>
   <footer class="app-footer">
     <nav class="footer-nav" aria-label="フッターナビゲーション">

@@ -2,5 +2,5 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <!-- あほらし館は検索から来てよいが、優先度は低く。トップ・pages.json には AdSense の結果が出るまで載せない（ROADMAP 7.46.1）。
        2026-10-18 から一時的に空（ROADMAP 7.104）: /hade/ と /hade/roulette/ は最初の HTML に文がほとんど無いので noindex にして外した。
-       中身を入れたら（QUEUE Q-025）2 枚を priority 0.3 で戻す（2026-10-17 以前の git の履歴の形） -->
+       中身は入れた（QUEUE Q-025、2026-10-21）。2 枚を priority 0.3 で戻すのは AdSense の審査の結果の後（Q-025a・D383。2026-10-17 以前の git の履歴の形） -->
 </urlset>

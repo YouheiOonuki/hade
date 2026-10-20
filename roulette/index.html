@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <!-- 一時の noindex（yorozu-plans ROADMAP 7.104）: 最初の HTML に文がほとんど無いので、中身を入れるまで索引と sitemap から外す。中身を入れたら（QUEUE Q-025）この行を消し、sitemap.xml に戻す -->
+  <!-- 一時の noindex（yorozu-plans ROADMAP 7.104）: 最初の HTML に文がほとんど無いので、中身を入れるまで索引と sitemap から外す。中身は入れた（QUEUE Q-025、2026-10-21）。この行を消して sitemap.xml に戻すのは AdSense の審査の結果の後（Q-025a・D383） -->
   <meta name="robots" content="noindex">
   <title>ルーレット（5000兆円欲しい館）—— 当たりはまじめ、発表だけ大げさ｜yorozu-craft</title>
-  <meta name="description" content="当たりを大げさに発表するルーレット。広告なし。">
+  <meta name="description" content="候補から当たりを選び、ドラムロールや号外で大げさに発表するルーレット。当たりの決め方はまじめな版と同じ。候補は送らず保存しない。広告なし。">
   <link rel="canonical" href="https://yorozu-craft.com/hade/roulette/">
   <meta property="og:title" content="ルーレット（5000兆円欲しい館）｜yorozu-craft">
   <meta property="og:description" content="賞金 5000兆円（支払いは気持ち）。">
@@ -14,6 +14,9 @@
   <meta property="og:url" content="https://yorozu-craft.com/hade/roulette/">
   <meta property="og:site_name" content="yorozu-craft">
   <meta property="og:locale" content="ja_JP">
+  <meta property="og:image" content="https://yorozu-craft.com/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
   <meta name="twitter:card" content="summary">
   <meta name="theme-color" content="#5b2a86">
   <!-- 広告なし（演出のページは本文が少ないので収益の場にしない。D303・D312）。英語版は作らない（笑いは訳せない）。AdSense はサイト所有の確認の meta だけ（広告の script は無い） -->
@@ -29,7 +32,8 @@
 
   <main class="app-main">
 
-    <p id="lib-error" class="card" hidden>読み込めませんでした。</p>
+    <!-- 文は JS が始まらなかったときだけ app.js が入れる（SCREEN 1.4 の 2） -->
+    <p id="lib-error" class="card" hidden></p>
 
     <!-- 盤を最初から見せ、入力は盤の下（ROADMAP 7.60 段 2 の 7）。盤は候補の欄に合わせて ../wheel.js が描く飾り。3D の盤は「回す」を押してから -->
     <form id="form" autocomplete="off">
@@ -54,6 +58,12 @@
 
     <section id="stage" class="hade-stage" hidden aria-live="polite"></section>
 
+    <!-- 1 画面目の下・脚の上の案内（SCREEN 1.4 の 2・D384。JS 無しの HTML に 100 字以上） -->
+    <section class="hade-about card" aria-labelledby="hade-about-h">
+      <h2 id="hade-about-h">この館について</h2>
+      <p>このルーレットは、候補の欄に書いた中から当たりを選び、ドラムロールや号外で大げさに発表します。当たりの決め方は、まじめな版のルーレットと同じ部品をそのまま読み込んでいるので、まじめな版と変わりません。候補はこの端末の中だけで使い、どこにも送らず、保存もしません。音は押すまで鳴りません。</p>
+      <p><a href="/web-roulette/">まじめな版へ戻る</a>／<a href="../">5000兆円欲しい館の入口</a></p>
+    </section>
   </main>
 
   <footer class="app-footer">
