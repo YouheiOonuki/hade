@@ -86,16 +86,15 @@ test('禁止の挙動が無い（本物の窓・閉じる確認・履歴の書�
   assert.match(read('roulette/app.js'), /fetch\('\.\.\/scripts\/roulette\.json'\)/);
 });
 
-// 一時（yorozu-plans ROADMAP 7.104、2026-10-18）: 最初の HTML に文がほとんど無いので noindex にして sitemap から外している。
-// 中身を入れたら（QUEUE Q-025）noindex を消して sitemap に戻し、この下の 2 つの assert を「noindex でない・sitemap にある」に戻す
-test('ページ: 広告なし・一時の noindex で sitemap に無い・英語版なし・まじめな版の lib を同じ URL で読む', () => {
+// 2026-10-18〜10-28 は noindex で sitemap から外していた（ROADMAP 7.104）。中身を入れて（QUEUE Q-025）、審査の後に戻した（Q-025a、ROADMAP 7.136）
+test('ページ: 広告なし・noindex でなく sitemap にある・英語版なし・まじめな版の lib を同じ URL で読む', () => {
   const sm = read('sitemap.xml');
   for (const [f, url] of [['index.html', 'https://yorozu-craft.com/hade/'], ['roulette/index.html', 'https://yorozu-craft.com/hade/roulette/']]) {
     const html = read(f);
     assert.doesNotMatch(html, /adsbygoogle|googlesyndication/, f);
-    assert.match(html, /<meta name="robots" content="noindex">/, f);
+    assert.doesNotMatch(html, /<meta name="robots" content="noindex">/, f);
     assert.doesNotMatch(html, /hreflang/, f);
-    assert.ok(!sm.includes(`<loc>${url}</loc>`), f);
+    assert.ok(sm.includes(`<loc>${url}</loc>`), f);
     if (f !== 'index.html') assert.match(html, /まじめな版/, f + ': まじめな版への道');
   }
   const page = read('roulette/index.html');
