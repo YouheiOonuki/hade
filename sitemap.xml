@@ -2,6 +2,6 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <!-- あほらし館は検索から来てよいが、優先度は低く。トップ・pages.json には載せない（ROADMAP 7.46.1）。
        2026-10-18〜10-28 は一時的に空だった（ROADMAP 7.104、noindex）。中身を入れ（QUEUE Q-025、2026-10-21）、審査が終わったので 2 枚を priority 0.3 で戻した（Q-025a、ROADMAP 7.135 D403・7.136） -->
-  <url><loc>https://yorozu-craft.com/hade/</loc><lastmod>2026-10-29</lastmod><priority>0.3</priority></url>
-  <url><loc>https://yorozu-craft.com/hade/roulette/</loc><lastmod>2026-10-29</lastmod><priority>0.3</priority></url>
+  <url><loc>https://yorozu-craft.com/hade/</loc><priority>0.3</priority></url>
+  <url><loc>https://yorozu-craft.com/hade/roulette/</loc><priority>0.3</priority></url>
 </urlset>
